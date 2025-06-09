@@ -48,13 +48,44 @@ def extract_keywords(text, top_n=5):
 def process_batch(df):
     """
     Process a batch of texts from DataFrame.
+    Returns DataFrame with results or raises ValueError with descriptive message.
     """
+    # Validate DataFrame
+    if df.empty:
+        raise ValueError("The uploaded CSV file is empty.")
+    
+    if len(df.columns) < 1:
+        raise ValueError("The CSV file must contain at least one column.")
+    
+    # Check if first column contains text data
+    first_col = df.iloc[:, 0]
+    if not first_col.dtype == object:
+        raise ValueError("The first column must contain text data.")
+    
+    if first_col.isnull().any():
+        raise ValueError("The text column contains empty cells. Please remove or fill them.")
+    
     results = []
-    for text in df.iloc[:, 0]:  # Assume first column contains text
-        sentiment_result = analyze_sentiment(text)
-        keywords = extract_keywords(text)
-        sentiment_result['keywords'] = ', '.join(keywords)
-        results.append(sentiment_result)
+    total_rows = len(df)
+    
+    for idx, text in enumerate(first_col):
+        try:
+            # Ensure text is string
+            text = str(text).strip()
+            if not text:
+                continue
+                
+            sentiment_result = analyze_sentiment(text)
+            keywords = extract_keywords(text)
+            sentiment_result['keywords'] = ', '.join(keywords)
+            results.append(sentiment_result)
+            
+        except Exception as e:
+            raise ValueError(f"Error processing row {idx + 1}: {str(e)}")
+    
+    if not results:
+        raise ValueError("No valid text entries found in the CSV file.")
+        
     return pd.DataFrame(results)
 
 def plot_sentiment_distribution(df):
@@ -63,14 +94,28 @@ def plot_sentiment_distribution(df):
     Returns the figure object.
     """
     plt.figure(figsize=(10, 6))
-    sns.countplot(data=df, x='sentiment', palette='viridis')
-    plt.title('Sentiment Distribution')
-    plt.xlabel('Sentiment')
-    plt.ylabel('Count')
+    
+    # Use custom colors for sentiments
+    colors = {'Positive': '#2ecc71', 'Neutral': '#95a5a6', 'Negative': '#e74c3c'}
+    
+    # Create the count plot with custom colors
+    sns.countplot(data=df, x='sentiment', palette=colors)
+    
+    # Customize the plot
+    plt.title('Sentiment Distribution', fontsize=14, pad=20)
+    plt.xlabel('Sentiment', fontsize=12)
+    plt.ylabel('Count', fontsize=12)
+    
+    # Add value labels on top of each bar
+    for i in plt.gca().containers:
+        plt.gca().bar_label(i, padding=3)
+    
+    # Adjust layout
+    plt.tight_layout()
     
     # Save plot to BytesIO object
     buf = BytesIO()
-    plt.savefig(buf, format='png', bbox_inches='tight')
+    plt.savefig(buf, format='png', bbox_inches='tight', dpi=300)
     plt.close()
     return buf
 

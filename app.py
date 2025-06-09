@@ -21,12 +21,65 @@ st.set_page_config(
 # Add custom CSS
 st.markdown("""
     <style>
+    /* Main app styling */
     .stApp {
         max-width: 1200px;
         margin: 0 auto;
     }
+    
+    /* Make dataframes use full width */
     .st-emotion-cache-1v0mbdj {
         width: 100%;
+    }
+    
+    /* Enhance text areas */
+    .stTextArea textarea {
+        font-size: 16px !important;
+        line-height: 1.5;
+        padding: 12px;
+        border-radius: 8px;
+    }
+    
+    /* Style file uploader */
+    .stUploadedFile {
+        border-radius: 8px;
+        padding: 16px;
+        background-color: #f8f9fa;
+        margin-bottom: 16px;
+    }
+    
+    /* Enhance metrics */
+    .stMetric {
+        background-color: #ffffff;
+        padding: 16px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Style download buttons */
+    .stDownloadButton {
+        width: 100%;
+        border-radius: 8px;
+        margin: 4px 0;
+    }
+    
+    /* Enhance tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        white-space: pre-wrap;
+        background-color: #f8f9fa;
+        border-radius: 8px 8px 0 0;
+        gap: 8px;
+        padding: 8px 16px;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background-color: #ffffff;
+        border-bottom: 2px solid #4CAF50;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -120,65 +173,123 @@ with tab1:
                     )
 
 with tab2:
-    # File upload
-    uploaded_file = st.file_uploader("Upload CSV file", type=['csv'])
+    st.markdown("""
+    ### Batch Analysis
+    Upload a CSV file containing texts to analyze. The file should have:
+    - At least one column
+    - Text data in the first column
+    - No empty cells
+    """)
+    
+    # File upload with additional instructions
+    uploaded_file = st.file_uploader(
+        "Upload CSV file", 
+        type=['csv'],
+        help="Your CSV file should have a column of texts to analyze. The first column will be used."
+    )
     
     if uploaded_file:
         try:
-            df = pd.read_csv(uploaded_file)
+            # Show file details
+            file_details = {
+                "Filename": uploaded_file.name,
+                "File size": f"{uploaded_file.size / 1024:.2f} KB",
+                "File type": uploaded_file.type
+            }
+            st.write("**File Details:**")
+            for k, v in file_details.items():
+                st.write(f"- {k}: {v}")
             
-            if len(df.columns) < 1:
-                st.error("The CSV file must have at least one column containing text.")
-            else:
-                with st.spinner("Processing batch analysis..."):
-                    # Process the batch
+            # Read CSV with progress indication
+            with st.spinner("Reading CSV file..."):
+                df = pd.read_csv(uploaded_file)
+            
+            # Process batch with progress bar
+            with st.spinner("Processing texts..."):
+                try:
                     results_df = process_batch(df)
                     
-                    # Display results
-                    st.subheader("Analysis Results")
-                    st.dataframe(results_df)
+                    # Success message
+                    st.success(f"Successfully analyzed {len(results_df)} texts!")
                     
-                    # Plot sentiment distribution
-                    st.subheader("Sentiment Distribution")
-                    plot_buf = plot_sentiment_distribution(results_df)
-                    st.image(plot_buf)
+                    # Display results in tabs
+                    results_tab1, results_tab2 = st.tabs(["Results Table", "Visualization"])
                     
-                    # Export options
-                    st.subheader("Export Results")
-                    col1, col2, col3 = st.columns(3)
-                    
-                    with col1:
-                        csv = results_df.to_csv(index=False)
-                        st.download_button(
-                            label="Download CSV",
-                            data=csv,
-                            file_name="batch_sentiment_analysis.csv",
-                            mime="text/csv"
+                    with results_tab1:
+                        st.subheader("Analysis Results")
+                        st.dataframe(
+                            results_df,
+                            use_container_width=True,
+                            hide_index=True
                         )
                     
-                    with col2:
-                        json_str = results_df.to_json(orient="records")
-                        st.download_button(
-                            label="Download JSON",
-                            data=json_str,
-                            file_name="batch_sentiment_analysis.json",
-                            mime="application/json"
-                        )
+                    with results_tab2:
+                        st.subheader("Sentiment Distribution")
+                        plot_buf = plot_sentiment_distribution(results_df)
+                        st.image(plot_buf)
+                        
+                        # Display summary statistics
+                        st.markdown("### Summary Statistics")
+                        sentiment_counts = results_df['sentiment'].value_counts()
+                        col1, col2, col3 = st.columns(3)
+                        
+                        with col1:
+                            st.metric("Positive", sentiment_counts.get('Positive', 0))
+                        with col2:
+                            st.metric("Neutral", sentiment_counts.get('Neutral', 0))
+                        with col3:
+                            st.metric("Negative", sentiment_counts.get('Negative', 0))
                     
-                    with col3:
-                        # Create PDF
-                        pdf_path = export_to_pdf(results_df, plot_buf)
-                        with open(pdf_path, "rb") as pdf_file:
+                    # Export options in an expander
+                    with st.expander("Export Options", expanded=True):
+                        st.markdown("Download the analysis results in your preferred format:")
+                        export_col1, export_col2, export_col3 = st.columns(3)
+                        
+                        with export_col1:
+                            csv = results_df.to_csv(index=False)
                             st.download_button(
-                                label="Download PDF",
-                                data=pdf_file,
-                                file_name="batch_sentiment_analysis.pdf",
-                                mime="application/pdf"
+                                label="📄 Download CSV",
+                                data=csv,
+                                file_name="batch_sentiment_analysis.csv",
+                                mime="text/csv",
+                                help="Download results as CSV file"
                             )
-                            
+                        
+                        with export_col2:
+                            json_str = results_df.to_json(orient="records")
+                            st.download_button(
+                                label="📋 Download JSON",
+                                data=json_str,
+                                file_name="batch_sentiment_analysis.json",
+                                mime="application/json",
+                                help="Download results as JSON file"
+                            )
+                        
+                        with export_col3:
+                            # Create PDF
+                            pdf_path = export_to_pdf(results_df, plot_buf)
+                            with open(pdf_path, "rb") as pdf_file:
+                                st.download_button(
+                                    label="📑 Download PDF Report",
+                                    data=pdf_file,
+                                    file_name="batch_sentiment_analysis.pdf",
+                                    mime="application/pdf",
+                                    help="Download complete report as PDF"
+                                )
+                
+                except ValueError as ve:
+                    st.error(f"❌ Validation Error: {str(ve)}")
+                    st.info("Please check your CSV file format and try again.")
+                    
+                except Exception as e:
+                    st.error(f"❌ Processing Error: {str(e)}")
+                    st.info("If this error persists, please contact support.")
+            
         except Exception as e:
-            st.error(f"Error processing file: {str(e)}")
+            st.error(f"❌ File Error: Could not read the CSV file.")
+            st.info("Make sure your file is a valid CSV file with proper formatting.")
+            st.code(str(e), language="python")
 
 # Footer
 st.markdown("---")
-st.markdown("Made with ❤️ using Streamlit and Hugging Face") 
+st.markdown("Made using Streamlit and Hugging Face") 
