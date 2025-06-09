@@ -95,7 +95,7 @@ You can either enter a single text or upload a CSV file for batch processing.
 st.sidebar.header("About")
 st.sidebar.info("""
 This dashboard uses:
-- 🤗 Hugging Face Transformers for sentiment analysis
+- Hugging Face Transformers for sentiment analysis
 - KeyBERT for keyword extraction
 - Streamlit for the user interface
 """)
@@ -292,4 +292,3 @@ with tab2:
 
 # Footer
 st.markdown("---")
-st.markdown("Made using Streamlit and Hugging Face") 
