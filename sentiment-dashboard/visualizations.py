@@ -268,13 +268,22 @@ def generate_wordcloud(texts, sentiments=None):
     return buf
 
 def optimize_chart_for_pdf(fig):
-    """Optimize a plotly figure for PDF export with enhanced styling"""
+    """Optimize a plotly figure for PDF export with enhanced styling and forced bright colors"""
     try:
         if fig is None:
             return None
         
         # Create a copy of the figure for modification
         pdf_fig = fig
+        
+        # Define bright, PDF-friendly colors that will show up clearly
+        pdf_colors = {
+            'Very Positive': '#00CC00',    # Bright Green
+            'Positive': '#66FF66',         # Light Green
+            'Neutral': '#FFD700',          # Gold/Yellow
+            'Negative': '#FF6600',         # Orange
+            'Very Negative': '#FF0000'     # Bright Red
+        }
         
         # Enhance for PDF export
         pdf_fig.update_layout(
@@ -285,39 +294,60 @@ def optimize_chart_for_pdf(fig):
             # Better font settings for PDF
             font=dict(
                 family="Arial, sans-serif",
-                size=12,
+                size=14,
                 color="#000000"  # Black text for better PDF contrast
             ),
             
             # Adjust title for PDF
             title=dict(
-                font=dict(size=16, color="#000000"),
+                font=dict(size=18, color="#000000", family="Arial"),
                 x=0.5,
                 y=0.95
             ),
             
             # Better margins for PDF
-            margin=dict(t=60, b=40, l=40, r=40),
+            margin=dict(t=70, b=50, l=50, r=50),
             
-            # Remove legend background for cleaner look
-            legend=dict(
-                bgcolor="rgba(255,255,255,0.8)",
-                bordercolor="#CCCCCC",
-                borderwidth=1
-            )
+            # Force bright colors for PDF
+            colorway=['#00CC00', '#66FF66', '#FFD700', '#FF6600', '#FF0000']
         )
         
-        # For pie charts, enhance text contrast
-        if 'pie' in str(type(pdf_fig.data[0])).lower():
-            pdf_fig.update_traces(
-                textfont=dict(size=12, color="white"),
-                textposition='inside',
-                textinfo='percent+label',
-                # Ensure strong colors for PDF
-                marker=dict(
-                    line=dict(color='white', width=2)
+        # For pie charts, enhance text contrast and force bright colors
+        if hasattr(pdf_fig, 'data') and len(pdf_fig.data) > 0:
+            trace = pdf_fig.data[0]
+            if hasattr(trace, 'type') and trace.type == 'pie':
+                # Force specific bright colors for pie chart segments
+                colors_list = []
+                if hasattr(trace, 'labels'):
+                    for label in trace.labels:
+                        colors_list.append(pdf_colors.get(str(label), '#808080'))
+                
+                pdf_fig.update_traces(
+                    marker=dict(
+                        colors=colors_list,
+                        line=dict(color='#FFFFFF', width=3)  # White borders
+                    ),
+                    textfont=dict(size=14, color="#000000", family="Arial"),  # Black text
+                    textposition='inside',
+                    textinfo='percent+label',
+                    insidetextorientation='radial'
                 )
-            )
+                
+                # Update layout specifically for pie charts
+                pdf_fig.update_layout(
+                    showlegend=True,
+                    legend=dict(
+                        orientation="v",
+                        yanchor="middle",
+                        y=0.5,
+                        xanchor="left",
+                        x=1.02,
+                        font=dict(size=12, color="#000000"),
+                        bgcolor="rgba(255,255,255,0.8)",
+                        bordercolor="#000000",
+                        borderwidth=1
+                    )
+                )
         
         return pdf_fig
         

@@ -1,4 +1,5 @@
 import pandas as pd
+import streamlit as st
 import tempfile
 import pdfkit
 from transformers import pipeline
@@ -17,7 +18,7 @@ from optimization import (
     handle_errors,
     optimize_memory_usage
 )
-from visualizations import convert_plotly_fig_to_bytes
+from visualizations import convert_plotly_fig_to_bytes, optimize_chart_for_pdf
 from reportlab.platypus import Table, TableStyle
 
 # Initialize models using ModelManager
@@ -610,7 +611,9 @@ def export_to_pdf(df, visualizations):
             c.drawString(50, y_position, viz_name)  # Use the dynamic name from the visualizations dict
             
             try:
-                plot_buf = convert_plotly_fig_to_bytes(fig)
+                # Optimize chart for PDF export
+                optimized_fig = optimize_chart_for_pdf(fig)
+                plot_buf = convert_plotly_fig_to_bytes(optimized_fig)
                 if plot_buf is not None:  # Check if conversion was successful
                     with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
                         tmp.write(plot_buf.getvalue())
@@ -650,7 +653,9 @@ def export_to_pdf(df, visualizations):
             c.drawString(50, y_position, "Sentiment Distribution Chart")
             
             try:
-                plot_buf = convert_plotly_fig_to_bytes(fig)
+                # Optimize chart for PDF export
+                optimized_fig = optimize_chart_for_pdf(fig)
+                plot_buf = convert_plotly_fig_to_bytes(optimized_fig)
                 if plot_buf is not None:  # Check if conversion was successful
                     with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
                         tmp.write(plot_buf.getvalue())
@@ -1096,11 +1101,12 @@ def safe_sentiment_analysis(text):
 
 def safe_keyword_extraction(text):
     """
-    Safely extract keywords with error handling.
+    Safe keyword extraction with error handling and user feedback.
     """
+    import streamlit as st
+    
     try:
-        validation_error = validate_text_input(text)
-        if validation_error:
+        if not text or len(text.strip()) < 3:
             return []
         
         keywords = extract_keywords(text)
