@@ -7,9 +7,48 @@ from transformers import pipeline
 from keybert import KeyBERT
 import streamlit as st
 from visualizations import (
-    plot_sentiment_distribution,
+    create_sentiment_distribution,
     generate_wordcloud
 )
+
+# Import the determine_use_case function from utils
+def determine_use_case(text):
+    """
+    Determine the most relevant use case for the analyzed text.
+    """
+    # Keywords associated with different use cases
+    use_cases = {
+        'social_media': ['post', 'tweet', 'comment', 'like', 'share', 'follow'],
+        'customer_feedback': ['review', 'feedback', 'rating', 'experience', 'service'],
+        'product_review': ['product', 'quality', 'price', 'feature', 'bought', 'purchased'],
+        'brand_monitoring': ['brand', 'company', 'reputation', 'market', 'competitor'],
+        'market_research': ['market', 'trend', 'industry', 'consumer', 'demand'],
+        'customer_service': ['support', 'help', 'issue', 'problem', 'resolution'],
+        'competitive_intel': ['competitor', 'versus', 'compared', 'alternative', 'better']
+    }
+    
+    text_lower = text.lower()
+    use_case_scores = {}
+    
+    for case, keywords in use_cases.items():
+        score = sum(1 for keyword in keywords if keyword in text_lower)
+        use_case_scores[case] = score
+    
+    # Get the use case with highest keyword matches
+    best_case = max(use_case_scores.items(), key=lambda x: x[1])[0]
+    
+    # Map to human-readable names
+    use_case_names = {
+        'social_media': 'Social Media Analysis',
+        'customer_feedback': 'Customer Feedback Analysis',
+        'product_review': 'Product Review Classification',
+        'brand_monitoring': 'Brand Monitoring',
+        'market_research': 'Market Research',
+        'customer_service': 'Customer Service Optimization',
+        'competitive_intel': 'Competitive Intelligence'
+    }
+    
+    return use_case_names.get(best_case, 'General Analysis')
 
 # Cache configuration
 CACHE_TTL = 3600  # 1 hour cache time
@@ -89,6 +128,14 @@ class ModelManager:
 class BatchProcessor:
     """
     Optimizes batch processing of text data.
+    Supports 5-class sentiment analysis for various use cases:
+    - Social media analysis
+    - Customer feedback analysis
+    - Product reviews classification
+    - Brand monitoring
+    - Market research
+    - Customer service optimization
+    - Competitive intelligence
     """
     
     @staticmethod
@@ -115,7 +162,17 @@ class BatchProcessor:
             # Process each result
             for text, result in zip(batch, sentiment_results):
                 score = int(result['label'].split()[0])
-                sentiment = "Negative" if score <= 2 else "Neutral" if score == 3 else "Positive"
+                # Map scores to five sentiment classes
+                if score == 1:
+                    sentiment = "Very Negative"
+                elif score == 2:
+                    sentiment = "Negative"
+                elif score == 3:
+                    sentiment = "Neutral"
+                elif score == 4:
+                    sentiment = "Positive"
+                else:  # score == 5
+                    sentiment = "Very Positive"
                 
                 # Extract keywords
                 keywords = keyword_model.extract_keywords(
@@ -125,12 +182,16 @@ class BatchProcessor:
                     top_n=5
                 )
                 
+                # Determine use case
+                use_case = determine_use_case(text)
+                
                 results.append({
                     'text': text,
                     'sentiment': sentiment,
                     'confidence': round(result['score'], 3),
                     'raw_score': score,
-                    'keywords': ', '.join([k[0] for k in keywords])
+                    'keywords': ', '.join([k[0] for k in keywords]),
+                    'use_case': use_case
                 })
         
         return pd.DataFrame(results)
@@ -157,9 +218,12 @@ class VisualizationOptimizer:
         """
         try:
             if viz_type == "sentiment_distribution":
-                return plot_sentiment_distribution(data, **kwargs)
+                return create_sentiment_distribution(data, **kwargs)
             elif viz_type == "wordcloud":
-                return generate_wordcloud(data['text'].tolist())
+                if 'text' in data.columns:
+                    return generate_wordcloud(data['text'].tolist())
+                else:
+                    return None
             else:
                 raise ValueError(f"Unknown visualization type: {viz_type}")
         except Exception as e:

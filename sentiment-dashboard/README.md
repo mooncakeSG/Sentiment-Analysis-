@@ -6,11 +6,42 @@ A powerful Streamlit-based dashboard for analyzing sentiment in text using state
 
 - Single text analysis with sentiment classification and keyword extraction
 - Batch analysis through CSV file upload
-- Multi-class sentiment analysis (Positive, Neutral, Negative) with confidence scores
+- Five-class sentiment analysis (Very Positive, Positive, Neutral, Negative, Very Negative) with confidence scores
+- Automatic use case detection for:
+  - Social media analysis
+  - Customer feedback analysis
+  - Product reviews classification
+  - Brand monitoring
+  - Market research
+  - Customer service optimization
+  - Competitive intelligence
 - Keyword extraction using KeyBERT
 - Interactive visualization of sentiment distribution
 - Export results in multiple formats (CSV, JSON, PDF)
 - Modern, responsive user interface
+
+## Use Cases
+
+### Social Media Analysis
+Monitor and analyze social media posts, comments, and reactions to understand public sentiment about your brand, products, or services.
+
+### Customer Feedback Analysis
+Process customer reviews, surveys, and feedback forms to gain insights into customer satisfaction and areas for improvement.
+
+### Product Reviews Classification
+Automatically categorize and analyze product reviews to understand customer sentiment and identify common praise or concerns.
+
+### Brand Monitoring
+Track brand mentions and sentiment across various channels to maintain brand reputation and respond to customer sentiment.
+
+### Market Research
+Analyze market trends, consumer opinions, and competitor reviews to inform business strategy and decision-making.
+
+### Customer Service Optimization
+Evaluate customer service interactions to improve response quality and customer satisfaction.
+
+### Competitive Intelligence
+Monitor competitor mentions and analyze customer sentiment about competing products or services.
 
 ## Prerequisites
 
@@ -55,8 +86,9 @@ streamlit run app.py
    - Entering text directly in the "Single Text Analysis" tab
    - Uploading a CSV file in the "Batch Analysis" tab
 
-## CSV File Format
+## Supported File Formats
 
+### CSV Files
 For batch analysis, prepare your CSV file with a single column containing the text to analyze. The first row should be the column header. Example:
 
 ```csv
@@ -65,6 +97,17 @@ This is a great product!
 The service was terrible.
 I'm neutral about this experience.
 ```
+
+### TXT Files
+For simple text files, put one sentence or text entry per line. Example:
+
+```txt
+This is a great product!
+The service was terrible.
+I'm neutral about this experience.
+```
+
+The system automatically detects the file format and processes it accordingly.
 
 ## Deployment
 

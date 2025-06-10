@@ -1,0 +1,231 @@
+{
+  "sample_packs": {
+    "🛍️ Product Reviews": {
+      "description": "Compare different types of product reviews from very positive to very negative",
+      "use_case": "E-commerce sentiment analysis, product feedback evaluation",
+      "samples": [
+        {
+          "label": "5-Star Premium Review",
+          "text": "This product exceeded all my expectations! The quality is outstanding, delivery was lightning fast, and customer service went above and beyond. I've recommended it to all my friends and family. Absolutely worth every penny and more! The attention to detail is remarkable.",
+          "expected_sentiment": "Very Positive",
+          "characteristics": ["High enthusiasm", "Multiple positive aspects", "Recommendation to others"]
+        },
+        {
+          "label": "1-Star Critical Review",
+          "text": "Completely disappointed with this purchase. The product arrived damaged, took forever to ship, and customer service was unhelpful and rude. Would never buy from this company again. Save your money and look elsewhere!",
+          "expected_sentiment": "Very Negative",
+          "characteristics": ["Multiple complaints", "Strong negative language", "Clear recommendation against"]
+        },
+        {
+          "label": "3-Star Balanced Review",
+          "text": "The product is okay, nothing special. It does what it's supposed to do but the quality could be better for the price. Shipping was reasonable but packaging was minimal. Not bad, but not great either.",
+          "expected_sentiment": "Neutral",
+          "characteristics": ["Mixed feedback", "Moderate expectations", "Balanced perspective"]
+        },
+        {
+          "label": "4-Star Positive Review",
+          "text": "Really happy with this purchase! Great value for money and arrived quickly. The product works well and looks nice. Only minor complaint is that the instructions could be clearer, but overall very satisfied.",
+          "expected_sentiment": "Positive",
+          "characteristics": ["Generally positive", "Minor criticism", "Value appreciation"]
+        }
+      ]
+    },
+    
+    "📱 Social Media Posts": {
+      "description": "Various types of social media content with different emotional tones",
+      "use_case": "Social media monitoring, brand sentiment tracking",
+      "samples": [
+        {
+          "label": "Celebration Post",
+          "text": "Just got the promotion I've been working towards for months! 🎉 So grateful for my amazing team and all the support. Time to celebrate! #blessed #career #success #grateful",
+          "expected_sentiment": "Very Positive",
+          "characteristics": ["Achievement celebration", "Gratitude expression", "Positive hashtags"]
+        },
+        {
+          "label": "Frustration Post",
+          "text": "Stuck in traffic for 2 hours because of this construction project. Why can't they work on roads during off-peak hours? This is ridiculous and affecting everyone's commute. #traffic #frustrated",
+          "expected_sentiment": "Negative",
+          "characteristics": ["Complaint about situation", "Rhetorical questions", "Impact on others"]
+        },
+        {
+          "label": "Informational Post",
+          "text": "Attended the quarterly meeting today. Discussed budget allocations and project timelines for Q4. Meeting notes will be shared by end of week. #business #quarterly #updates",
+          "expected_sentiment": "Neutral",
+          "characteristics": ["Factual information", "Professional tone", "No emotional language"]
+        }
+      ]
+    },
+    
+    "📞 Customer Service Feedback": {
+      "description": "Customer feedback ranging from appreciation to complaints",
+      "use_case": "Customer service analysis, support quality assessment",
+      "samples": [
+        {
+          "label": "Appreciation Message",
+          "text": "I wanted to reach out and express my sincere appreciation for the exceptional service I received from your support team. They resolved my issue quickly and professionally. This level of care keeps me as a loyal customer. Thank you!",
+          "expected_sentiment": "Very Positive",
+          "characteristics": ["Formal appreciation", "Specific praise", "Loyalty mention"]
+        },
+        {
+          "label": "Escalation Complaint",
+          "text": "I'm extremely frustrated with the lack of response to my previous inquiries. It's been over a week and I still haven't received any updates on my order status. This poor communication is completely unacceptable for a company of your size.",
+          "expected_sentiment": "Very Negative",
+          "characteristics": ["Strong frustration", "Timeline complaints", "Professional criticism"]
+        },
+        {
+          "label": "Mixed Experience",
+          "text": "The product itself is great and works as advertised, but the ordering process was confusing and the website was difficult to navigate. Good product, poor user experience. Please improve your online platform.",
+          "expected_sentiment": "Neutral",
+          "characteristics": ["Mixed feedback", "Specific suggestions", "Constructive criticism"]
+        }
+      ]
+    },
+    
+    "📰 News & Analysis": {
+      "description": "News articles and reports with varying sentiment tones",
+      "use_case": "Media sentiment analysis, news tone classification",
+      "samples": [
+        {
+          "label": "Positive Economic Report",
+          "text": "The latest economic indicators show robust growth in the technology sector, with unemployment rates reaching historic lows. Consumer confidence is soaring and businesses are reporting unprecedented levels of investment in innovation and expansion.",
+          "expected_sentiment": "Positive",
+          "characteristics": ["Positive economic indicators", "Growth language", "Optimistic outlook"]
+        },
+        {
+          "label": "Environmental Warning",
+          "text": "Environmental scientists warn that current pollution levels in major metropolitan areas have reached critical thresholds. Immediate action is required to prevent irreversible long-term health consequences for millions of residents across the region.",
+          "expected_sentiment": "Negative",
+          "characteristics": ["Warning language", "Urgency indicators", "Health concerns"]
+        },
+        {
+          "label": "Policy Announcement",
+          "text": "The federal budget committee announced the allocation of $2.5 billion for infrastructure improvements across 15 states. The projects are scheduled to begin in Q1 of next year and will focus on transportation and digital connectivity.",
+          "expected_sentiment": "Neutral",
+          "characteristics": ["Factual reporting", "Specific numbers", "Timeline information"]
+        }
+      ]
+    },
+    
+    "🎬 Entertainment Reviews": {
+      "description": "Movie and entertainment reviews with different critical perspectives",
+      "use_case": "Entertainment industry analysis, review sentiment classification",
+      "samples": [
+        {
+          "label": "Rave Review",
+          "text": "A cinematic masterpiece that transcends genre boundaries! The director's visionary approach comes alive with breathtaking visuals, powerhouse performances, and a soundtrack that perfectly complements every emotional beat. This film will be studied and celebrated for decades to come.",
+          "expected_sentiment": "Very Positive",
+          "characteristics": ["Superlative language", "Technical appreciation", "Long-term significance"]
+        },
+        {
+          "label": "Scathing Critique",
+          "text": "Two hours of my life I'll never get back. Atrocious plot development, wooden acting that would make a plank seem dynamic, and special effects that looked like they were rendered on a calculator. How did this catastrophe get greenlit?",
+          "expected_sentiment": "Very Negative",
+          "characteristics": ["Time regret", "Multiple criticisms", "Rhetorical frustration"]
+        },
+        {
+          "label": "Measured Review",
+          "text": "The film demonstrates some compelling moments, particularly in the character development during the second act, but ultimately suffers from uneven pacing and several underdeveloped subplot threads. Worth watching for the cinematography and lead performance.",
+          "expected_sentiment": "Neutral",
+          "characteristics": ["Balanced critique", "Specific strengths/weaknesses", "Qualified recommendation"]
+        }
+      ]
+    },
+    
+    "💼 Business Communications": {
+      "description": "Professional business communications with various tones",
+      "use_case": "Corporate communication analysis, business sentiment tracking",
+      "samples": [
+        {
+          "label": "Success Announcement",
+          "text": "I'm absolutely thrilled to announce that our Q3 results have shattered all previous projections! Thanks to everyone's extraordinary dedication and innovative thinking, we've achieved a remarkable 23% increase in revenue. The future has never looked brighter!",
+          "expected_sentiment": "Very Positive",
+          "characteristics": ["Achievement celebration", "Team recognition", "Future optimism"]
+        },
+        {
+          "label": "Strategic Concern",
+          "text": "Recent comprehensive market analysis indicates significant headwinds and potential disruption ahead. We must urgently reassess our current strategic positioning and implement decisive cost-optimization measures to maintain our competitive edge in this increasingly challenging environment.",
+          "expected_sentiment": "Negative",
+          "characteristics": ["Warning tone", "Urgency language", "Challenge acknowledgment"]
+        },
+        {
+          "label": "Project Update",
+          "text": "Project Alpha milestone review indicates 78% completion status and remains aligned with the December 15th delivery timeline. All department leads have confirmed adequate resource allocation for the final implementation phase activities.",
+          "expected_sentiment": "Neutral",
+          "characteristics": ["Progress reporting", "Timeline confirmation", "Resource status"]
+        }
+      ]
+    },
+    
+    "🏥 Healthcare Feedback": {
+      "description": "Patient and healthcare feedback with varying satisfaction levels",
+      "use_case": "Healthcare sentiment analysis, patient satisfaction assessment",
+      "samples": [
+        {
+          "label": "Exceptional Care",
+          "text": "The entire medical team provided absolutely outstanding care during my recent procedure. From the initial consultation through recovery, every staff member was professional, compassionate, and thorough. I felt completely confident and well-cared for throughout the entire experience.",
+          "expected_sentiment": "Very Positive",
+          "characteristics": ["Comprehensive praise", "Process coverage", "Emotional confidence"]
+        },
+        {
+          "label": "Service Complaint",
+          "text": "Extremely disappointed with the long wait times and apparent disorganization in scheduling. Despite arriving on time for my appointment, I waited nearly two hours with minimal communication. This level of inefficiency is unacceptable in healthcare.",
+          "expected_sentiment": "Negative",
+          "characteristics": ["Time complaints", "Process criticism", "Service standards"]
+        },
+        {
+          "label": "Mixed Experience",
+          "text": "The medical care received was professional and thorough, but the administrative process was somewhat confusing and the facility could benefit from better signage. Overall satisfied with the treatment outcome despite the logistical challenges.",
+          "expected_sentiment": "Neutral",
+          "characteristics": ["Care vs. process distinction", "Improvement suggestions", "Outcome focus"]
+        }
+      ]
+    },
+    
+    "🎓 Educational Feedback": {
+      "description": "Student and educational feedback across different satisfaction levels",
+      "use_case": "Educational sentiment analysis, course evaluation processing",
+      "samples": [
+        {
+          "label": "Outstanding Course",
+          "text": "This course completely transformed my understanding of the subject! The professor's engaging teaching style, combined with practical assignments and excellent resources, made complex concepts accessible and exciting. I'm genuinely inspired to pursue further study in this area.",
+          "expected_sentiment": "Very Positive",
+          "characteristics": ["Transformational language", "Teaching method praise", "Future motivation"]
+        },
+        {
+          "label": "Poor Experience", 
+          "text": "Disappointing course structure with unclear objectives and minimal instructor engagement. The assignments felt disconnected from the lectures, and feedback was often delayed or superficial. Would not recommend this course to future students.",
+          "expected_sentiment": "Negative",
+          "characteristics": ["Structure criticism", "Engagement issues", "Recommendation against"]
+        },
+        {
+          "label": "Adequate Course",
+          "text": "The course covered the essential material adequately and the instructor was knowledgeable about the subject matter. Some lectures were more engaging than others, and the workload was manageable. Met expectations but didn't exceed them.",
+          "expected_sentiment": "Neutral",
+          "characteristics": ["Basic satisfaction", "Variable quality", "Expectation alignment"]
+        }
+      ]
+    }
+  },
+  
+  "metadata": {
+    "created_date": "2024-01-15",
+    "version": "1.0",
+    "total_categories": 8,
+    "total_samples": 25,
+    "description": "Comprehensive sample pack for testing and demonstrating comparative sentiment analysis features",
+    "usage_instructions": [
+      "Select a category that matches your analysis needs",
+      "Load the sample pack to populate text fields automatically", 
+      "Run comparative analysis to see differences in sentiment detection",
+      "Examine confidence scores and statistical correlations",
+      "Use insights to understand model behavior across different text types"
+    ],
+    "educational_value": [
+      "Demonstrates sentiment analysis across various domains",
+      "Shows how text length affects confidence scores",
+      "Illustrates mixed sentiment detection capabilities",
+      "Provides examples of edge cases and challenging texts",
+      "Enables testing of statistical analysis features"
+    ]
+  }
+} 

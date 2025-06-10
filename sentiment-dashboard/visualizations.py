@@ -8,101 +8,231 @@ import streamlit as st
 
 # Define consistent color scheme
 SENTIMENT_COLORS = {
-    'Positive': '#2ecc71',  # Green
-    'Neutral': '#95a5a6',   # Gray
-    'Negative': '#e74c3c'   # Red
+    'Very Positive': '#00a65a',  # Dark Green
+    'Positive': '#2ecc71',      # Light Green
+    'Neutral': '#95a5a6',       # Gray
+    'Negative': '#e74c3c',      # Light Red
+    'Very Negative': '#c0392b'  # Dark Red
 }
 
-def plot_sentiment_distribution(df, plot_type='bar'):
+def create_sentiment_distribution(data, plot_type="bar", **kwargs):
     """
-    Create sentiment distribution plot using Plotly.
-    Returns a Plotly figure object.
+    Create enhanced sentiment distribution visualization with professional styling
     """
-    sentiment_counts = df['sentiment'].value_counts()
-    
-    # Ensure specific order
-    order = ['Positive', 'Neutral', 'Negative']
-    counts = [sentiment_counts.get(sent, 0) for sent in order]
-    colors = [SENTIMENT_COLORS[sent] for sent in order]
-
-    if plot_type == 'bar':
-        fig = go.Figure(data=[
-            go.Bar(
-                x=order,
-                y=counts,
-                marker_color=colors,
-                text=counts,
-                textposition='auto',
+    try:
+        if data is None or data.empty:
+            return None
+        
+        # Professional color palette
+        colors = {
+            'Very Positive': '#059669',   # Emerald-600
+            'Positive': '#10B981',        # Emerald-500
+            'Neutral': '#6B7280',         # Gray-500
+            'Negative': '#EF4444',        # Red-500
+            'Very Negative': '#DC2626'    # Red-600
+        }
+        
+        # Count sentiments
+        sentiment_counts = data['sentiment'].value_counts()
+        
+        # Create color list for the plot
+        plot_colors = [colors.get(sentiment, '#6B7280') for sentiment in sentiment_counts.index]
+        
+        if plot_type == "bar":
+            fig = px.bar(
+                x=sentiment_counts.index, 
+                y=sentiment_counts.values,
+                color=sentiment_counts.index,
+                color_discrete_map=colors,
+                title="📊 Sentiment Distribution Analysis",
+                labels={'x': 'Sentiment Category', 'y': 'Number of Texts'}
             )
-        ])
-        
-        fig.update_layout(
-            title='Sentiment Distribution',
-            xaxis_title='Sentiment',
-            yaxis_title='Count',
-            template='plotly_white',
-            showlegend=False,
-            yaxis_gridcolor='rgba(0,0,0,0.1)',
-            plot_bgcolor='white'
-        )
-        
-    elif plot_type in ['pie', 'donut']:
-        fig = go.Figure(data=[
-            go.Pie(
-                labels=order,
-                values=counts,
-                marker_colors=colors,
-                textinfo='percent',
-                hoverinfo='label+value',
-                hole=0.5 if plot_type == 'donut' else 0
-            )
-        ])
-        
-        fig.update_layout(
-            title='Sentiment Distribution',
-            template='plotly_white',
-            showlegend=True
-        )
-        
-    elif plot_type == 'line':
-        if 'timestamp' not in df.columns:
-            df = df.copy()
-            df['timestamp'] = pd.date_range(start='today', periods=len(df), freq='H')
-        
-        sentiment_pivot = pd.crosstab(df['timestamp'], df['sentiment'])
-        
-        fig = go.Figure()
-        
-        for sentiment in order:
-            if sentiment in sentiment_pivot.columns:
-                fig.add_trace(
-                    go.Scatter(
-                        x=sentiment_pivot.index,
-                        y=sentiment_pivot[sentiment],
-                        name=sentiment,
-                        line=dict(color=SENTIMENT_COLORS[sentiment]),
-                        mode='lines+markers'
-                    )
+            
+            # Enhanced styling
+            fig.update_layout(
+                plot_bgcolor="white",
+                paper_bgcolor="white",
+                font_color="#111827",
+                title_font_size=20,
+                title_x=0.5,
+                title_font_family="Inter, sans-serif",
+                margin=dict(t=80, b=60, l=60, r=60),
+                showlegend=False,
+                xaxis=dict(
+                    showgrid=False,
+                    linecolor="#E5E7EB",
+                    title_font_size=14,
+                    title_font_family="Inter, sans-serif"
+                ),
+                yaxis=dict(
+                    showgrid=True,
+                    gridcolor="#F3F4F6",
+                    linecolor="#E5E7EB",
+                    title_font_size=14,
+                    title_font_family="Inter, sans-serif"
                 )
+            )
+            
+            # Add hover template
+            fig.update_traces(
+                hovertemplate="<b>%{x}</b><br>" +
+                             "Count: %{y}<br>" +
+                             "Percentage: %{customdata:.1%}<extra></extra>",
+                customdata=sentiment_counts.values / sentiment_counts.sum()
+            )
+            
+        elif plot_type == "pie":
+            fig = px.pie(
+                values=sentiment_counts.values,
+                names=sentiment_counts.index,
+                color=sentiment_counts.index,
+                color_discrete_map=colors,
+                title="🥧 Sentiment Distribution (Pie Chart)"
+            )
+            
+            fig.update_layout(
+                plot_bgcolor="white",
+                paper_bgcolor="white",
+                font_color="#111827",
+                title_font_size=20,
+                title_x=0.5,
+                title_font_family="Inter, sans-serif",
+                margin=dict(t=80, b=60, l=60, r=60)
+            )
+            
+            fig.update_traces(
+                textposition='inside',
+                textinfo='percent+label',
+                hovertemplate="<b>%{label}</b><br>" +
+                             "Count: %{value}<br>" +
+                             "Percentage: %{percent}<extra></extra>"
+            )
+            
+        elif plot_type == "donut":
+            fig = px.pie(
+                values=sentiment_counts.values,
+                names=sentiment_counts.index,
+                color=sentiment_counts.index,
+                color_discrete_map=colors,
+                title="🍩 Sentiment Distribution (Donut Chart)",
+                hole=0.4
+            )
+            
+            fig.update_layout(
+                plot_bgcolor="white",
+                paper_bgcolor="white",
+                font_color="#111827",
+                title_font_size=20,
+                title_x=0.5,
+                title_font_family="Inter, sans-serif",
+                margin=dict(t=80, b=60, l=60, r=60),
+                annotations=[dict(text='Sentiment<br>Analysis', x=0.5, y=0.5, font_size=16, showarrow=False)]
+            )
+            
+        elif plot_type == "line":
+            # For line plot, we'll show trend if there's a sequence
+            fig = px.line(
+                x=sentiment_counts.index,
+                y=sentiment_counts.values,
+                title="📈 Sentiment Trend Analysis",
+                markers=True
+            )
+            
+            fig.update_layout(
+                plot_bgcolor="white",
+                paper_bgcolor="white",
+                font_color="#111827",
+                title_font_size=20,
+                title_x=0.5,
+                title_font_family="Inter, sans-serif",
+                margin=dict(t=80, b=60, l=60, r=60),
+                xaxis=dict(
+                    showgrid=False,
+                    linecolor="#E5E7EB"
+                ),
+                yaxis=dict(
+                    showgrid=True,
+                    gridcolor="#F3F4F6",
+                    linecolor="#E5E7EB"
+                )
+            )
+            
+            fig.update_traces(
+                line_color="#4F46E5",
+                line_width=3,
+                marker_color="#7C3AED",
+                marker_size=8
+            )
+        
+        return fig
+        
+    except Exception as e:
+        print(f"Error creating sentiment distribution: {str(e)}")
+        return None
+
+def create_confidence_chart(data, **kwargs):
+    """
+    Create confidence distribution chart
+    """
+    try:
+        if data is None or data.empty or 'confidence' not in data.columns:
+            return None
+        
+        # Create confidence distribution
+        fig = px.histogram(
+            data, 
+            x='confidence',
+            title="📊 Confidence Score Distribution",
+            labels={'confidence': 'Confidence Score', 'count': 'Number of Texts'},
+            nbins=20
+        )
         
         fig.update_layout(
-            title='Sentiment Trends Over Time',
-            xaxis_title='Time',
-            yaxis_title='Count',
-            template='plotly_white',
-            showlegend=True,
-            yaxis_gridcolor='rgba(0,0,0,0.1)',
-            plot_bgcolor='white'
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            font_color="#111827",
+            title_font_size=20,
+            title_x=0.5,
+            title_font_family="Inter, sans-serif",
+            margin=dict(t=80, b=60, l=60, r=60),
+            xaxis=dict(
+                showgrid=False,
+                linecolor="#E5E7EB",
+                title_font_size=14,
+                title_font_family="Inter, sans-serif"
+            ),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor="#F3F4F6",
+                linecolor="#E5E7EB",
+                title_font_size=14,
+                title_font_family="Inter, sans-serif"
+            )
         )
-    
-    # Update common layout properties
-    fig.update_layout(
-        font=dict(size=12),
-        title_x=0.5,
-        margin=dict(t=50, l=50, r=50, b=50)
-    )
-    
-    return fig
+        
+        fig.update_traces(marker_color="#4F46E5")
+        
+        return fig
+        
+    except Exception as e:
+        print(f"Error creating confidence chart: {str(e)}")
+        return None
+
+def create_keyword_importance(data, **kwargs):
+    """
+    Create keyword importance visualization
+    """
+    try:
+        if data is None or data.empty:
+            return None
+        
+        # This is a placeholder function since keyword importance would require
+        # more complex processing. For now, return None to indicate not available
+        return None
+        
+    except Exception as e:
+        print(f"Error creating keyword importance chart: {str(e)}")
+        return None
 
 def generate_wordcloud(texts, sentiments=None):
     """
