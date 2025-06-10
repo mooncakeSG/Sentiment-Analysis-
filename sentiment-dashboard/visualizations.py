@@ -267,8 +267,85 @@ def generate_wordcloud(texts, sentiments=None):
     plt.close()
     return buf
 
+def optimize_chart_for_pdf(fig):
+    """Optimize a plotly figure for PDF export with enhanced styling"""
+    try:
+        if fig is None:
+            return None
+        
+        # Create a copy of the figure for modification
+        pdf_fig = fig
+        
+        # Enhance for PDF export
+        pdf_fig.update_layout(
+            # White background for better PDF rendering
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            
+            # Better font settings for PDF
+            font=dict(
+                family="Arial, sans-serif",
+                size=12,
+                color="#000000"  # Black text for better PDF contrast
+            ),
+            
+            # Adjust title for PDF
+            title=dict(
+                font=dict(size=16, color="#000000"),
+                x=0.5,
+                y=0.95
+            ),
+            
+            # Better margins for PDF
+            margin=dict(t=60, b=40, l=40, r=40),
+            
+            # Remove legend background for cleaner look
+            legend=dict(
+                bgcolor="rgba(255,255,255,0.8)",
+                bordercolor="#CCCCCC",
+                borderwidth=1
+            )
+        )
+        
+        # For pie charts, enhance text contrast
+        if 'pie' in str(type(pdf_fig.data[0])).lower():
+            pdf_fig.update_traces(
+                textfont=dict(size=12, color="white"),
+                textposition='inside',
+                textinfo='percent+label',
+                # Ensure strong colors for PDF
+                marker=dict(
+                    line=dict(color='white', width=2)
+                )
+            )
+        
+        return pdf_fig
+        
+    except Exception as e:
+        print(f"Error optimizing chart for PDF: {str(e)}")
+        return fig  # Return original if optimization fails
+
 def convert_plotly_fig_to_bytes(fig):
-    """Convert a plotly figure to bytes buffer for PDF export"""
-    img_bytes = fig.to_image(format="png", engine="kaleido")
-    buf = BytesIO(img_bytes)
-    return buf 
+    """Convert a plotly figure to bytes buffer for PDF export with enhanced quality"""
+    try:
+        if fig is None:
+            return None
+        
+        # Create high-quality image with specific settings for PDF
+        img_bytes = fig.to_image(
+            format="png", 
+            engine="kaleido",
+            width=800,     # Higher resolution
+            height=500,    # Better aspect ratio
+            scale=2        # Higher DPI for sharper images
+        )
+        
+        if img_bytes is None:
+            return None
+            
+        buf = BytesIO(img_bytes)
+        return buf
+        
+    except Exception as e:
+        print(f"Error converting plotly figure to bytes: {str(e)}")
+        return None 
