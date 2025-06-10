@@ -295,6 +295,28 @@ def export_to_pdf(df, visualizations):
     confidence_col = 'confidence' if 'confidence' in df.columns else 'Confidence'
     use_case_col = 'use_case' if 'use_case' in df.columns else 'Use_Case'
     
+    # Handle different text column names
+    text_col = None
+    if 'text' in df.columns:
+        text_col = 'text'
+    elif 'Content_Preview' in df.columns:
+        text_col = 'Content_Preview'
+    elif 'Label' in df.columns:
+        text_col = 'Label'
+    else:
+        # Fallback to first string column
+        for col in df.columns:
+            if df[col].dtype == 'object':
+                text_col = col
+                break
+    
+    # Handle different keyword column names
+    keywords_col = None
+    if 'keywords' in df.columns:
+        keywords_col = 'keywords'
+    elif 'Key_Phrases' in df.columns:
+        keywords_col = 'Key_Phrases'
+    
     sentiment_counts = df[sentiment_col].value_counts()
     total_texts = len(df)
     
@@ -448,26 +470,54 @@ def export_to_pdf(df, visualizations):
     # Column headers - make them even shorter
     headers = ['Text (30 chars)', 'Sentiment', 'Conf.', 'Keywords', 'Use Case']
     
+    # Handle different text column names for different analysis types
+    text_col = None
+    if 'text' in df.columns:
+        text_col = 'text'
+    elif 'Content_Preview' in df.columns:
+        text_col = 'Content_Preview'
+    elif 'Label' in df.columns:
+        text_col = 'Label'
+    else:
+        # Fallback to first string column
+        for col in df.columns:
+            if df[col].dtype == 'object':
+                text_col = col
+                break
+    
+    # Handle different keyword column names
+    keywords_col = None
+    if 'keywords' in df.columns:
+        keywords_col = 'keywords'
+    elif 'Key_Phrases' in df.columns:
+        keywords_col = 'Key_Phrases'
+    
     # Create table data
     table_data = [headers]
     
     for idx, row in df.head(max_rows_per_page).iterrows():
-        # Truncate text very aggressively for display
-        text_display = row['text'][:30] + '...' if len(row['text']) > 30 else row['text']
-        # Clean text to remove line breaks and special characters
-        text_display = text_display.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
+        # Truncate text very aggressively for display - handle missing text column
+        if text_col and text_col in row:
+            text_display = str(row[text_col])[:30] + '...' if len(str(row[text_col])) > 30 else str(row[text_col])
+            # Clean text to remove line breaks and special characters
+            text_display = text_display.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
+        else:
+            text_display = f"Row {idx+1}"  # Fallback if no text column
         
-        # Get only the first keyword to fit better
-        keywords = row['keywords'].split(', ')[:1] if 'keywords' in row else []
-        keywords_display = keywords[0] if keywords else ''
-        # Truncate keywords if too long
-        if len(keywords_display) > 15:
-            keywords_display = keywords_display[:12] + '...'
+        # Get only the first keyword to fit better - handle missing keywords column
+        if keywords_col and keywords_col in row and row[keywords_col]:
+            keywords = str(row[keywords_col]).split(', ')[:1]
+            keywords_display = keywords[0] if keywords else ''
+            # Truncate keywords if too long
+            if len(keywords_display) > 15:
+                keywords_display = keywords_display[:12] + '...'
+        else:
+            keywords_display = ''  # No keywords available
         
         # Truncate use case even more aggressively
         use_case = row.get(use_case_col, 'General')
-        if len(use_case) > 12:
-            use_case = use_case[:9] + '...'
+        if len(str(use_case)) > 12:
+            use_case = str(use_case)[:9] + '...'
         
         # Truncate sentiment if needed
         sentiment = row[sentiment_col]
@@ -486,7 +536,7 @@ def export_to_pdf(df, visualizations):
             sentiment,
             f"{row[confidence_col]:.2f}",  # Shorter confidence format
             keywords_display,
-            use_case
+            str(use_case)
         ]
         
         table_data.append(row_data)
@@ -559,22 +609,36 @@ def export_to_pdf(df, visualizations):
             c.setFont("Helvetica-Bold", 14)
             c.drawString(50, y_position, viz_name)  # Use the dynamic name from the visualizations dict
             
-            plot_buf = convert_plotly_fig_to_bytes(fig)
-            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
-                tmp.write(plot_buf.getvalue())
-                tmp_path = tmp.name
-            
-            # Draw chart with border
-            chart_width, chart_height = 500, 250
-            c.setStrokeColor(colors.HexColor('#E5E7EB'))  # Use lighter border color
-            c.setLineWidth(1)
-            c.rect(50, y_position-chart_height-10, chart_width, chart_height, fill=0, stroke=1)
-            c.drawImage(tmp_path, 55, y_position-chart_height-5, width=chart_width-10, height=chart_height-10)
-            
-            import os
-            os.unlink(tmp_path)
-            y_position -= (chart_height + 40)
-            chart_added = True
+            try:
+                plot_buf = convert_plotly_fig_to_bytes(fig)
+                if plot_buf is not None:  # Check if conversion was successful
+                    with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
+                        tmp.write(plot_buf.getvalue())
+                        tmp_path = tmp.name
+                    
+                    # Draw chart with border
+                    chart_width, chart_height = 500, 250
+                    c.setStrokeColor(colors.HexColor('#E5E7EB'))  # Use lighter border color
+                    c.setLineWidth(1)
+                    c.rect(50, y_position-chart_height-10, chart_width, chart_height, fill=0, stroke=1)
+                    c.drawImage(tmp_path, 55, y_position-chart_height-5, width=chart_width-10, height=chart_height-10)
+                    
+                    import os
+                    os.unlink(tmp_path)
+                    y_position -= (chart_height + 40)
+                    chart_added = True
+                else:
+                    # Chart conversion failed, show error message
+                    c.setFont("Helvetica", 10)
+                    c.setFillColor(colors.grey)
+                    c.drawString(50, y_position-20, "Chart visualization temporarily unavailable")
+                    y_position -= 40
+            except Exception as e:
+                # Handle any chart conversion errors
+                c.setFont("Helvetica", 10)
+                c.setFillColor(colors.grey)
+                c.drawString(50, y_position-20, f"Chart error: {str(e)[:50]}...")
+                y_position -= 40
             break  # Only add one chart type
     
     # Fallback if no sentiment distribution chart was found
@@ -585,21 +649,35 @@ def export_to_pdf(df, visualizations):
             c.setFont("Helvetica-Bold", 14)
             c.drawString(50, y_position, "Sentiment Distribution Chart")
             
-            plot_buf = convert_plotly_fig_to_bytes(fig)
-            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
-                tmp.write(plot_buf.getvalue())
-                tmp_path = tmp.name
-            
-            # Draw chart with border
-            chart_width, chart_height = 500, 250
-            c.setStrokeColor(colors.HexColor('#E5E7EB'))
-            c.setLineWidth(1)
-            c.rect(50, y_position-chart_height-10, chart_width, chart_height, fill=0, stroke=1)
-            c.drawImage(tmp_path, 55, y_position-chart_height-5, width=chart_width-10, height=chart_height-10)
-            
-            import os
-            os.unlink(tmp_path)
-            y_position -= (chart_height + 40)
+            try:
+                plot_buf = convert_plotly_fig_to_bytes(fig)
+                if plot_buf is not None:  # Check if conversion was successful
+                    with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
+                        tmp.write(plot_buf.getvalue())
+                        tmp_path = tmp.name
+                    
+                    # Draw chart with border
+                    chart_width, chart_height = 500, 250
+                    c.setStrokeColor(colors.HexColor('#E5E7EB'))
+                    c.setLineWidth(1)
+                    c.rect(50, y_position-chart_height-10, chart_width, chart_height, fill=0, stroke=1)
+                    c.drawImage(tmp_path, 55, y_position-chart_height-5, width=chart_width-10, height=chart_height-10)
+                    
+                    import os
+                    os.unlink(tmp_path)
+                    y_position -= (chart_height + 40)
+                else:
+                    # Chart conversion failed, show error message
+                    c.setFont("Helvetica", 10)
+                    c.setFillColor(colors.grey)
+                    c.drawString(50, y_position-20, "Chart visualization temporarily unavailable")
+                    y_position -= 40
+            except Exception as e:
+                # Handle any chart conversion errors
+                c.setFont("Helvetica", 10)
+                c.setFillColor(colors.grey)
+                c.drawString(50, y_position-20, f"Chart error: {str(e)[:50]}...")
+                y_position -= 40
     
     # Add word cloud if available
     if "Word Cloud" in visualizations and y_position > 200:
@@ -608,19 +686,25 @@ def export_to_pdf(df, visualizations):
             c.setFont("Helvetica-Bold", 14)
             c.drawString(50, y_position, "Word Cloud Analysis")
             
-            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
-                tmp.write(wordcloud_buf.getvalue())
-                tmp_path = tmp.name
-            
-            # Draw word cloud with border
-            cloud_width, cloud_height = 500, 200
-            c.setStrokeColor(colors.grey)
-            c.setLineWidth(1)
-            c.rect(50, y_position-cloud_height-30, cloud_width, cloud_height, fill=0, stroke=1)
-            c.drawImage(tmp_path, 55, y_position-cloud_height-25, width=cloud_width-10, height=cloud_height-10)
-            
-            import os
-            os.unlink(tmp_path)
+            try:
+                with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
+                    tmp.write(wordcloud_buf.getvalue())
+                    tmp_path = tmp.name
+                
+                # Draw word cloud with border
+                cloud_width, cloud_height = 500, 200
+                c.setStrokeColor(colors.grey)
+                c.setLineWidth(1)
+                c.rect(50, y_position-cloud_height-30, cloud_width, cloud_height, fill=0, stroke=1)
+                c.drawImage(tmp_path, 55, y_position-cloud_height-25, width=cloud_width-10, height=cloud_height-10)
+                
+                import os
+                os.unlink(tmp_path)
+            except Exception as e:
+                # Handle any word cloud errors
+                c.setFont("Helvetica", 10)
+                c.setFillColor(colors.grey)
+                c.drawString(50, y_position-20, f"Word cloud error: {str(e)[:50]}...")
     
     # Footer on last page
     c.setFont("Helvetica", 8)
