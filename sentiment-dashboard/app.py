@@ -68,8 +68,8 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
-        'Get Help': 'https://github.com/tech-titanians/sentiment-dashboard',
-        'Report a bug': 'https://github.com/tech-titanians/sentiment-dashboard/issues',
+        'Get Help': 'https://github.com/mooncakeSG/Sentiment-Analysis-',
+        'Report a bug': 'https://github.com/mooncakeSG/Sentiment-Analysis-/issues/1',
         'About': "# Sentiment Analysis Dashboard\nBuilt by the Tech Titanians\n\nAnalyze sentiment in text data using state-of-the-art AI models."
     }
 )
@@ -389,11 +389,10 @@ st.markdown("""
         visibility: visible;
     }
     
-    /* Hide default Streamlit elements */
-    #MainMenu {visibility: hidden;}
+    /* Hide default Streamlit elements but keep menu */
     .stDeployButton {display: none;}
     footer {visibility: hidden;}
-    .stApp > header {display: none;}
+    /* Keep MainMenu and header visible for menu access */
 </style>
 """, unsafe_allow_html=True)
 
@@ -529,7 +528,7 @@ with st.sidebar:
     
     with help_col2:
         if st.button("🐛 Report", use_container_width=True):
-            st.info("Use the menu (⋮) → 'Report a bug'")
+            st.info("Report bugs at: https://github.com/mooncakeSG/Sentiment-Analysis-/issues/1")
     
     # Footer with credits
     st.markdown("---")
