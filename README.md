@@ -250,6 +250,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **[⭐ Star this repository](https://github.com/mooncakeSG/Sentiment-Analysis-)** if you found it helpful!
 
-Made with ❤️ by the Tech Titanians
+Made by the Tech Titanians
 
 </div> 
