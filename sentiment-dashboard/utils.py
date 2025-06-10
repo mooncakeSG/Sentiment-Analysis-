@@ -81,25 +81,57 @@ def determine_use_case(text):
     """
     Determine the most relevant use case for the analyzed text.
     """
-    # Keywords associated with different use cases
+    # Enhanced keywords with better coverage and weights
     use_cases = {
-        'social_media': ['post', 'tweet', 'comment', 'like', 'share', 'follow'],
-        'customer_feedback': ['review', 'feedback', 'rating', 'experience', 'service'],
-        'product_review': ['product', 'quality', 'price', 'feature', 'bought', 'purchased'],
-        'brand_monitoring': ['brand', 'company', 'reputation', 'market', 'competitor'],
-        'market_research': ['market', 'trend', 'industry', 'consumer', 'demand'],
-        'customer_service': ['support', 'help', 'issue', 'problem', 'resolution'],
-        'competitive_intel': ['competitor', 'versus', 'compared', 'alternative', 'better']
+        'product_review': {
+            'keywords': ['product', 'quality', 'price', 'feature', 'bought', 'purchased', 'taste', 'tastes', 'flavor', 'food', 'meal', 'dish', 'restaurant', 'delivery', 'order', 'item', 'goods', 'material', 'build', 'design', 'works', 'performance', 'value', 'money', 'worth', 'recommend', 'disappointed', 'satisfied', 'amazing', 'terrible', 'excellent', 'poor', 'cheap', 'expensive', 'fish', 'chicken', 'beef', 'pizza', 'burger', 'coffee', 'tea', 'bread', 'cake', 'sweet', 'sour', 'bitter', 'salty', 'spicy', 'fresh', 'stale', 'delicious', 'disgusting', 'yummy', 'nasty', 'cooked', 'raw', 'hot', 'cold', 'warm', 'crispy', 'soft', 'hard', 'juicy', 'dry'],
+            'weight': 1.2  # Higher weight for product reviews
+        },
+        'social_media': {
+            'keywords': ['post', 'posted', 'tweet', 'comment', 'like', 'share', 'follow', 'hashtag', 'instagram', 'facebook', 'twitter', 'snapchat', 'tiktok', 'social', 'viral', 'trending', 'story', 'stories'],
+            'weight': 1.0
+        },
+        'customer_feedback': {
+            'keywords': ['review', 'feedback', 'rating', 'experience', 'service', 'staff', 'team', 'visit', 'visited', 'customer', 'client', 'overall', 'satisfaction', 'recommend', 'suggestion'],
+            'weight': 1.1
+        },
+        'brand_monitoring': {
+            'keywords': ['brand', 'company', 'reputation', 'market', 'competitor', 'business', 'organization', 'corporate', 'enterprise', 'firm'],
+            'weight': 1.0
+        },
+        'market_research': {
+            'keywords': ['market', 'trend', 'industry', 'consumer', 'demand', 'analysis', 'research', 'study', 'survey', 'data', 'statistics'],
+            'weight': 1.0
+        },
+        'customer_service': {
+            'keywords': ['support', 'help', 'issue', 'problem', 'resolution', 'solve', 'fix', 'assistance', 'ticket', 'contact', 'complaint', 'refund', 'return'],
+            'weight': 1.1
+        },
+        'competitive_intel': {
+            'keywords': ['competitor', 'versus', 'vs', 'compared', 'alternative', 'better', 'worse', 'competition', 'rival', 'against'],
+            'weight': 1.0
+        }
     }
     
     text_lower = text.lower()
     use_case_scores = {}
     
-    for case, keywords in use_cases.items():
-        score = sum(1 for keyword in keywords if keyword in text_lower)
+    for case, case_data in use_cases.items():
+        keywords = case_data['keywords']
+        weight = case_data['weight']
+        
+        # Count keyword matches
+        keyword_matches = sum(1 for keyword in keywords if keyword in text_lower)
+        
+        # Apply weight and calculate score
+        score = keyword_matches * weight
         use_case_scores[case] = score
     
-    # Get the use case with highest keyword matches
+    # If no keywords match, return default
+    if all(score == 0 for score in use_case_scores.values()):
+        return 'General Analysis'
+    
+    # Get the use case with highest weighted score
     best_case = max(use_case_scores.items(), key=lambda x: x[1])[0]
     
     # Map to human-readable names
@@ -258,8 +290,12 @@ def export_to_pdf(df, visualizations):
     c.setFont("Helvetica-Bold", 16)
     c.drawString(50, y_position, "Executive Summary")
     
-    # Summary statistics
-    sentiment_counts = df['sentiment'].value_counts()
+    # Summary statistics - handle both uppercase and lowercase column names
+    sentiment_col = 'sentiment' if 'sentiment' in df.columns else 'Sentiment'
+    confidence_col = 'confidence' if 'confidence' in df.columns else 'Confidence'
+    use_case_col = 'use_case' if 'use_case' in df.columns else 'Use_Case'
+    
+    sentiment_counts = df[sentiment_col].value_counts()
     total_texts = len(df)
     
     # Calculate percentages
@@ -278,8 +314,8 @@ def export_to_pdf(df, visualizations):
     summary_text = [
         f"Analysis of {total_texts} text entries reveals the following sentiment distribution:",
         f"• {dominant_sentiment} sentiment dominates at {dominant_percentage:.1f}% of responses",
-        f"• Average confidence score: {df['confidence'].mean():.3f}",
-        f"• Most common use case: {df['use_case'].mode().iloc[0] if 'use_case' in df.columns else 'General Analysis'}"
+        f"• Average confidence score: {df[confidence_col].mean():.3f}",
+        f"• Most common use case: {df[use_case_col].mode().iloc[0] if use_case_col in df.columns else 'General Analysis'}"
     ]
     
     for line in summary_text:
@@ -317,7 +353,7 @@ def export_to_pdf(df, visualizations):
         percentage = sentiment_percentages.get(sentiment, 0)
         
         # Get confidence range for this sentiment
-        sentiment_data = df[df['sentiment'] == sentiment]['confidence'] if count > 0 else []
+        sentiment_data = df[df[sentiment_col] == sentiment][confidence_col] if count > 0 else []
         if len(sentiment_data) > 0:
             conf_min = sentiment_data.min()
             conf_max = sentiment_data.max()
@@ -341,12 +377,12 @@ def export_to_pdf(df, visualizations):
         y_position -= 15
     
     # Use Case Analysis (if available)
-    if 'use_case' in df.columns:
+    if use_case_col in df.columns:
         y_position -= 30
         c.setFont("Helvetica-Bold", 14)
         c.drawString(50, y_position, "Use Case Distribution")
         
-        use_case_counts = df['use_case'].value_counts()
+        use_case_counts = df[use_case_col].value_counts()
         y_position -= 20
         c.setFont("Helvetica", 11)
         
@@ -379,14 +415,14 @@ def export_to_pdf(df, visualizations):
         insights.append("• Balanced sentiment distribution observed")
     
     # Confidence insights
-    avg_confidence = df['confidence'].mean()
+    avg_confidence = df[confidence_col].mean()
     if avg_confidence > 0.8:
         insights.append("• High confidence in predictions indicates reliable results")
     elif avg_confidence < 0.6:
         insights.append("• Lower confidence scores suggest need for manual review")
     
     # Variability insights
-    confidence_std = df['confidence'].std()
+    confidence_std = df[confidence_col].std()
     if confidence_std > 0.2:
         insights.append("• High variability in confidence scores detected")
     
@@ -429,12 +465,12 @@ def export_to_pdf(df, visualizations):
             keywords_display = keywords_display[:12] + '...'
         
         # Truncate use case even more aggressively
-        use_case = row.get('use_case', 'General')
+        use_case = row.get(use_case_col, 'General')
         if len(use_case) > 12:
             use_case = use_case[:9] + '...'
         
         # Truncate sentiment if needed
-        sentiment = row['sentiment']
+        sentiment = row[sentiment_col]
         if len(sentiment) > 10:
             sentiment_map = {
                 'Very Positive': 'V.Pos',
@@ -448,7 +484,7 @@ def export_to_pdf(df, visualizations):
         row_data = [
             text_display,
             sentiment,
-            f"{row['confidence']:.2f}",  # Shorter confidence format
+            f"{row[confidence_col]:.2f}",  # Shorter confidence format
             keywords_display,
             use_case
         ]

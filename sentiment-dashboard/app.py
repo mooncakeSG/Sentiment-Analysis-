@@ -559,7 +559,8 @@ with tab1:
         label_visibility="visible"
     )
     
-    # Add character counter
+    # Add character counter and analyze button
+    analyze_button_disabled = True
     if text_input:
         char_count = len(text_input)
         if char_count < 3:
@@ -568,8 +569,21 @@ with tab1:
             st.error(f"⚠️ Too long: {char_count}/5000 maximum characters")
         else:
             st.success(f"✅ Ready for analysis: {char_count} characters")
+            analyze_button_disabled = False
     
-    if text_input:
+    # Analyze button with improved styling
+    st.markdown("<br>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        analyze_clicked = st.button(
+            "🔍 Analyze Sentiment", 
+            use_container_width=True, 
+            disabled=analyze_button_disabled,
+            type="primary",
+            help="Click to analyze the sentiment of your text" if not analyze_button_disabled else "Enter valid text to enable analysis"
+        )
+    
+    if text_input and analyze_clicked:
         # Validate input first
         validation_error = validate_text_input(text_input)
         if validation_error:
@@ -1627,7 +1641,7 @@ with tab3:
                                 st.download_button(
                                     label="📋 Download PDF Report",
                                     data=pdf_buffer.getvalue(),
-                                    file_name=f"comparative_analysis_{datetime.now.strftime('%Y%m%d_%H%M%S')}.pdf",
+                                    file_name=f"comparative_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                                     mime="application/pdf",
                                     use_container_width=True,
                                     help="Download comprehensive PDF report with visualizations"
