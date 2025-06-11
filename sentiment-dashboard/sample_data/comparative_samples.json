@@ -1,0 +1,117 @@
+{
+  "sample_packs": {
+    "product_reviews": {
+      "name": "🛍️ Product Reviews",
+      "description": "Compare different types of product reviews from very positive to very negative",
+      "samples": [
+        {
+          "label": "5-Star Premium Review",
+          "text": "This product exceeded all my expectations! The quality is outstanding, delivery was lightning fast, and customer service went above and beyond. I've recommended it to all my friends and family. Absolutely worth every penny and more!"
+        },
+        {
+          "label": "1-Star Critical Review", 
+          "text": "Completely disappointed with this purchase. The product arrived damaged, took forever to ship, and customer service was unhelpful and rude. Would never buy from this company again. Save your money!"
+        },
+        {
+          "label": "3-Star Balanced Review",
+          "text": "The product is okay, nothing special. It does what it's supposed to do but the quality could be better for the price. Shipping was reasonable but packaging was minimal."
+        }
+      ]
+    },
+    
+    "social_media": {
+      "name": "📱 Social Media Posts",
+      "description": "Various types of social media content with different emotional tones",
+      "samples": [
+        {
+          "label": "Celebration Post",
+          "text": "Just got the promotion I've been working towards for months! 🎉 So grateful for my amazing team and all the support. Time to celebrate! #blessed #career #success"
+        },
+        {
+          "label": "Frustration Post",
+          "text": "Stuck in traffic for 2 hours because of this construction project. Why can't they work on roads during off-peak hours? This is ridiculous and affecting everyone's commute."
+        },
+        {
+          "label": "Informational Post",
+          "text": "Attended the quarterly meeting today. Discussed budget allocations and project timelines for Q4. Meeting notes will be shared by end of week."
+        }
+      ]
+    },
+    
+    "customer_feedback": {
+      "name": "📞 Customer Service Feedback",
+      "description": "Customer feedback ranging from appreciation to complaints",
+      "samples": [
+        {
+          "label": "Appreciation Message",
+          "text": "I wanted to reach out and express my sincere appreciation for the exceptional service I received from your support team. They resolved my issue quickly and professionally. This level of care keeps me as a loyal customer."
+        },
+        {
+          "label": "Escalation Complaint",
+          "text": "I'm extremely frustrated with the lack of response to my previous inquiries. It's been over a week and I still haven't received any updates on my order status. This poor communication is unacceptable."
+        },
+        {
+          "label": "Mixed Experience",
+          "text": "The product itself is great and works as advertised, but the ordering process was confusing and the website was difficult to navigate. Good product, poor user experience."
+        }
+      ]
+    },
+    
+    "news_analysis": {
+      "name": "📰 News & Analysis",
+      "description": "News articles and reports with varying sentiment tones",
+      "samples": [
+        {
+          "label": "Positive Economic Report",
+          "text": "The latest economic indicators show strong growth in the technology sector, with unemployment rates reaching historic lows. Consumer confidence is up and businesses are reporting increased investment in innovation."
+        },
+        {
+          "label": "Environmental Warning",
+          "text": "Environmental scientists warn that current pollution levels in major cities have reached critical thresholds. Immediate action is required to prevent long-term health consequences for millions of residents."
+        },
+        {
+          "label": "Policy Announcement",
+          "text": "The federal budget committee announced the allocation of $2.5 billion for infrastructure improvements across 15 states. The projects are scheduled to begin in Q1 of next year."
+        }
+      ]
+    },
+    
+    "entertainment_reviews": {
+      "name": "🎬 Entertainment Reviews",
+      "description": "Movie and entertainment reviews with different critical perspectives",
+      "samples": [
+        {
+          "label": "Rave Review",
+          "text": "A masterpiece of cinematography! The director's vision comes alive with stunning visuals, compelling performances, and a soundtrack that perfectly complements every scene. This film will be remembered for decades."
+        },
+        {
+          "label": "Harsh Critique",
+          "text": "Two hours of my life I'll never get back. Poor plot development, wooden acting, and special effects that looked like they were made in someone's basement. How did this get greenlit?"
+        },
+        {
+          "label": "Balanced Review",
+          "text": "The film has some strong moments, particularly in the second act, but suffers from pacing issues and underdeveloped characters. Worth watching for the cinematography alone."
+        }
+      ]
+    },
+    
+    "business_communications": {
+      "name": "💼 Business Communications",
+      "description": "Professional business communications with various tones",
+      "samples": [
+        {
+          "label": "Success Announcement",
+          "text": "I'm thrilled to announce that our Q3 results have exceeded all projections! Thanks to everyone's hard work and dedication, we've achieved a 15% increase in revenue. Looking forward to building on this momentum."
+        },
+        {
+          "label": "Strategic Concern",
+          "text": "Recent market analysis indicates potential challenges ahead. We need to reassess our current strategy and implement cost-saving measures to maintain competitiveness in this uncertain environment."
+        },
+        {
+          "label": "Status Update",
+          "text": "Project Alpha is currently 75% complete and on schedule for the December deadline. All team leads have confirmed resource availability for the final phase implementation."
+        }
+      ]
+    }
+  }
+} 

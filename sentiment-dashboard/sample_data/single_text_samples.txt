@@ -1,0 +1,114 @@
+SINGLE TEXT ANALYSIS SAMPLES
+=============================
+
+📝 Copy and paste these samples into the "Single Text Analysis" tab to test different sentiment types:
+
+🎉 VERY POSITIVE SAMPLES:
+-------------------------
+1. Product Review:
+"This product is absolutely incredible! It exceeded all my expectations and works flawlessly. The customer service was outstanding, and delivery was super fast. I'm extremely happy with this purchase and would definitely recommend it to everyone!"
+
+2. Social Media Post:
+"Just had the most amazing day at the new restaurant downtown! The food was phenomenal, service was perfect, and the atmosphere was absolutely delightful. Can't wait to go back! 5 stars all the way! 🌟🌟🌟🌟🌟"
+
+3. Employee Feedback:
+"I love working here! The company culture is fantastic, my teammates are incredibly supportive, and management truly cares about our professional development. This is the best job I've ever had!"
+
+😊 POSITIVE SAMPLES:
+-------------------
+1. Movie Review:
+"Great movie with solid acting and an engaging storyline. The cinematography was beautiful and the soundtrack complemented the scenes well. Definitely worth watching and I enjoyed the experience."
+
+2. Hotel Review:
+"Nice hotel with clean rooms and friendly staff. The location was convenient and the breakfast was good. Would stay here again when visiting the city."
+
+3. App Review:
+"Good app that does what it promises. The interface is user-friendly and the features work well. Some minor bugs but overall a useful tool for daily tasks."
+
+😐 NEUTRAL SAMPLES:
+------------------
+1. Technical Documentation:
+"The system processes data using a three-tier architecture. Users can access the interface through the web portal. The database stores information in normalized tables."
+
+2. News Report:
+"The company announced quarterly results today. Revenue increased by 3% compared to the previous quarter. The stock price remained stable following the announcement."
+
+3. Academic Text:
+"This study examines the relationship between variables A and B. The methodology involved collecting data from 500 participants over six months. Results are presented in the following sections."
+
+😔 NEGATIVE SAMPLES:
+-------------------
+1. Product Complaint:
+"Disappointed with this purchase. The product doesn't work as advertised and the quality is poor. Customer service was unhelpful when I tried to resolve the issue."
+
+2. Service Review:
+"Bad experience at this restaurant. The food was cold, service was slow, and the staff seemed disinterested. Won't be returning."
+
+3. Software Feedback:
+"The app crashes frequently and has many bugs. The interface is confusing and it's difficult to complete basic tasks. Needs significant improvements."
+
+😢 VERY NEGATIVE SAMPLES:
+------------------------
+1. Angry Customer Review:
+"Absolutely terrible experience! This is the worst product I've ever bought. It broke immediately, customer service was rude and unhelpful, and I wasted my money. Complete disaster!"
+
+2. Frustrated Social Media Post:
+"Completely furious with this company! They lied about delivery dates, the product is garbage, and they refuse to give me a refund. Avoid at all costs! Worst customer service ever!"
+
+3. Employment Review:
+"Horrible workplace with toxic management and terrible working conditions. No work-life balance, poor communication, and zero support from leadership. Would never recommend working here."
+
+🎯 MIXED SENTIMENT SAMPLES:
+--------------------------
+1. Balanced Review:
+"The product has some good features like fast performance and nice design, but it also has issues with battery life and the price is quite high. Mixed feelings overall."
+
+2. Constructive Feedback:
+"The service was generally good and the staff tried their best, however there were some delays and the process could be more streamlined. Room for improvement but not bad."
+
+3. Comparative Analysis:
+"While the new version has improved functionality, it lacks some features from the old version. The interface is better but performance seems slower in some areas."
+
+💼 BUSINESS USE CASES:
+---------------------
+1. Customer Support:
+"Thank you for your quick response to my inquiry. The solution you provided worked perfectly and resolved my issue efficiently. Great support team!"
+
+2. Market Research:
+"The survey results indicate moderate satisfaction levels among customers. Key areas for improvement include pricing strategy and product features."
+
+3. Internal Communication:
+"The project milestone was completed on schedule. Team collaboration was effective and deliverables met quality standards. Ready to proceed to next phase."
+
+📱 SOCIAL MEDIA EXAMPLES:
+------------------------
+1. Excitement:
+"Just got tickets to see my favorite band live! So excited I can barely contain myself! This is going to be the best concert ever! 🎵🎤🎸"
+
+2. Disappointment:
+"Concert was cancelled last minute due to technical issues. Really bummed out since I was looking forward to this for months. Hope they reschedule soon."
+
+3. Information Sharing:
+"The concert venue has updated their health and safety protocols. Masks are required and digital tickets only. Check their website for full details."
+
+✨ CREATIVE/LITERARY SAMPLES:
+----------------------------
+1. Poetic Expression:
+"The sunset painted the sky in brilliant hues of orange and pink, creating a masterpiece that took my breath away. Nature's beauty never fails to inspire wonder."
+
+2. Storytelling:
+"As she walked through the quiet forest, the sound of rustling leaves and distant birdsong created a peaceful symphony that calmed her troubled mind."
+
+3. Descriptive Writing:
+"The old bookstore smelled of aged paper and leather bindings. Dust particles danced in the afternoon sunlight streaming through tall windows."
+
+📊 STATISTICAL/ANALYTICAL:
+-------------------------
+1. Research Finding:
+"The data shows a 15% increase in user engagement following the interface redesign. Response times improved by 23% and user satisfaction scores rose significantly."
+
+2. Performance Report:
+"Monthly metrics indicate steady progress toward quarterly goals. Customer acquisition rates remain stable while retention has improved by 8%."
+
+3. Technical Analysis:
+"System performance monitoring reveals optimal resource utilization. Database queries execute within acceptable parameters and server response times are consistent." 
