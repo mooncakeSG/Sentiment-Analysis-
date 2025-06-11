@@ -548,7 +548,14 @@ st.markdown("""
 
 # Sidebar
 with st.sidebar:
-    # Enhanced "How to Use This App" section - prominently placed at top
+    # Dashboard Info header at the top with darker font
+    st.markdown("""
+    <div style="text-align: center; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); margin: 0 0 1rem 0;">
+        <h2 style="color: #2D3748; margin: 0; font-size: 1.5rem; font-weight: 700;">🔬 Dashboard Info</h2>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Enhanced "How to Use This App" section
     with st.expander("📘 How to Use This App", expanded=True):
         st.markdown("""
         ### Quick Start Guide
@@ -577,13 +584,6 @@ with st.sidebar:
         • Try the **sample packs** for quick testing
         • Check **confidence scores** for reliability
         """)
-    
-    # Sidebar header with icon
-    st.markdown("""
-    <div style="text-align: center; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); margin: 1rem 0;">
-        <h2 style="color: white; margin: 0; font-size: 1.5rem;">🔬 Dashboard Info</h2>
-    </div>
-    """, unsafe_allow_html=True)
     
     # Technologies used section
     st.markdown("### 🛠️ Technologies")

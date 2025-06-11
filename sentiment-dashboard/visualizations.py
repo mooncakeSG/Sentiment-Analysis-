@@ -10,11 +10,11 @@ import streamlit as st
 def detect_dark_mode():
     """
     Detect if user prefers dark mode
-    Currently returns False but can be enhanced with browser detection
+    Since Streamlit's dark theme detection is complex, we'll default to dark mode support
     """
-    # For now, we'll use a simple session state approach
-    # In a real app, you might detect this from browser preferences
-    return st.session_state.get('dark_mode', False)
+    # For better compatibility with Streamlit's dark theme, we'll assume dark mode
+    # This provides better visibility in dark interfaces
+    return True
 
 # Function to get theme-appropriate colors
 def get_theme_colors(dark_mode=False):
@@ -250,10 +250,11 @@ def create_confidence_chart(data, **kwargs):
             ),
             yaxis=dict(
                 showgrid=True,
-                gridcolor="#F3F4F6",
-                linecolor="#E5E7EB",
+                gridcolor=theme_colors['grid_color'],
+                linecolor=theme_colors['line_color'],
                 title_font_size=14,
-                title_font_family="Inter, sans-serif"
+                title_font_family="Inter, sans-serif",
+                color=theme_colors['text_color']
             )
         )
         
@@ -283,7 +284,7 @@ def create_keyword_importance(data, **kwargs):
 
 def generate_wordcloud(texts, sentiments=None):
     """
-    Generate a word cloud from texts.
+    Generate a word cloud from texts with dark mode support.
     """
     if isinstance(texts, str):
         texts = [texts]
@@ -291,15 +292,19 @@ def generate_wordcloud(texts, sentiments=None):
     # Combine all texts
     text = ' '.join(texts)
     
-    # Create and generate a word cloud image
+    # Detect dark mode for appropriate styling
+    dark_mode = detect_dark_mode()
+    
+    # Create and generate a word cloud image with dark mode support
     wordcloud = WordCloud(
         width=1200,
         height=600,
-        background_color='white',
+        background_color='#1f2937' if dark_mode else 'white',
         max_words=100,
-        colormap='viridis',
+        colormap='plasma' if dark_mode else 'viridis',
         prefer_horizontal=0.7,
-        collocations=False
+        collocations=False,
+        color_func=lambda *args, **kwargs: "#f8fafc" if dark_mode else None
     ).generate(text)
     
     # Display the word cloud
@@ -308,9 +313,13 @@ def generate_wordcloud(texts, sentiments=None):
     plt.axis('off')
     plt.tight_layout(pad=0)
     
+    # Set figure background to match theme
+    fig_bg = '#1f2937' if dark_mode else 'white'
+    
     # Save to BytesIO
     buf = BytesIO()
-    plt.savefig(buf, format='png', bbox_inches='tight', dpi=300, facecolor='white')
+    plt.savefig(buf, format='png', bbox_inches='tight', dpi=300, 
+                facecolor=fig_bg, edgecolor='none')
     plt.close()
     return buf
 
