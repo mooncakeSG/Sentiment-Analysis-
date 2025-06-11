@@ -29,13 +29,7 @@ def load_lottie_url(url: str):
         return None
     return r.json()
 
-with st.sidebar.expander("📘 How to Use This App", expanded=False):
-    st.markdown("""
-    **Step-by-step guide:**
-    1. Enter a single text or upload a CSV file.
-    2. Click 'Analyze' to see the sentiment and keywords.
-    3. Use the Export section to download results.
-    """)
+# Comprehensive "How to Use" will be in the main sidebar below
 
 # Initialize loading state
 if 'app_loaded' not in st.session_state:
@@ -161,47 +155,125 @@ def cached_visualization(data: pd.DataFrame, viz_type: str, **kwargs):
 
 # Page configuration already set at the top of the file
 
-# Enhanced Custom CSS with professional styling
+# Adaptive CSS for Light & Dark Modes
 st.markdown("""
 <style>
-    /* Import Google Fonts for better typography */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    /* Global styling */
+    /* Font & Reset */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+    /* CSS Variables for Theme Colors */
+    :root {
+        --bg1: #F8FAFC;
+        --bg2: #E0E7FF;
+        --bg3: #FFFFFF;
+        --text-primary: #111827;
+        --text-secondary: #6B7280;
+        --border-color: #E5E7EB;
+        --card-bg: #FFFFFF;
+        --input-bg: #FFFFFF;
+        --shadow-light: rgba(0, 0, 0, 0.1);
+        --shadow-medium: rgba(0, 0, 0, 0.08);
+    }
+
     html, body, [class*="css"] {
-        font-family: 'Inter', 'Segoe UI', sans-serif;
-        background-color: #F9FAFB;
-        color: #111827;
+        font-family: 'Inter', sans-serif;
         line-height: 1.6;
     }
-    
-    /* Main container improvements */
+
+    /* Adapt background/text based on system theme */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg1: #1f2937;
+            --bg2: #374151;
+            --bg3: #1f2937;
+            --text-primary: #f8fafc;
+            --text-secondary: #d1d5db;
+            --border-color: #374151;
+            --card-bg: #1f2937;
+            --input-bg: #1f2937;
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+        }
+        
+        html, body {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+        
+        .main > div {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+        }
+        
+        .stTextArea textarea,
+        .stTextInput input,
+        .stSelectbox div,
+        .stDataFrame,
+        .stFileUploader {
+            background-color: var(--input-bg) !important;
+            color: var(--text-primary) !important;
+            border-color: var(--border-color) !important;
+        }
+        
+        .stMetricLabel, .stMetricValue {
+            color: #f8fafc !important;
+        }
+        
+        .stTabs [data-baseweb="tab-list"] {
+            background: var(--card-bg) !important;
+            border-color: var(--border-color) !important;
+        }
+        
+        .stTabs [data-baseweb="tab"] {
+            color: var(--text-secondary) !important;
+        }
+        
+        .stTabs [data-baseweb="tab"]:hover {
+            background-color: var(--bg2) !important;
+            color: var(--text-primary) !important;
+        }
+    }
+
+    /* Light mode defaults */
+    @media (prefers-color-scheme: light) {
+        html, body {
+            background-color: #F9FAFB;
+            color: #111827;
+        }
+        
+        .main > div {
+            background-color: #F9FAFB;
+            color: #111827;
+        }
+    }
+
+    /* Global styling */
     .main > div {
-        background-color: #F9FAFB;
         padding: 1rem 2rem 2rem 2rem;
         max-width: 1400px;
         margin: 0 auto;
     }
-    
+
     /* Enhanced text area styling */
     .stTextArea > div > div > textarea {
-        background-color: white;
-        border: 2px solid #E5E7EB;
+        background-color: var(--input-bg);
+        border: 2px solid var(--border-color);
         border-radius: 12px;
         padding: 1rem;
         font-size: 1rem;
         line-height: 1.6;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 3px var(--shadow-light);
         transition: all 0.2s ease;
         font-family: 'Inter', sans-serif;
+        color: var(--text-primary);
     }
-    
+
     .stTextArea > div > div > textarea:focus {
         border-color: #4F46E5;
         box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         outline: none;
     }
-    
+
     /* Enhanced button styling */
     .stButton > button {
         background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
@@ -214,13 +286,13 @@ st.markdown("""
         transition: all 0.2s ease;
         box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
     }
-    
+
     .stButton > button:hover {
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         background: linear-gradient(135deg, #4338CA 0%, #6D28D9 100%);
     }
-    
+
     /* Download button improvements */
     .stDownloadButton > button {
         background: linear-gradient(135deg, #059669 0%, #047857 100%);
@@ -232,29 +304,29 @@ st.markdown("""
         transition: all 0.2s ease;
         box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
     }
-    
+
     .stDownloadButton > button:hover {
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
         background: linear-gradient(135deg, #047857 0%, #065F46 100%);
     }
-    
+
     /* Metric container styling */
     .metric-container {
-        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+        background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg1) 100%);
         padding: 1.5rem;
         border-radius: 12px;
-        border: 1px solid #E5E7EB;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 8px var(--shadow-medium);
         margin-bottom: 1rem;
         transition: all 0.2s ease;
     }
-    
+
     .metric-container:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 16px var(--shadow-light);
     }
-    
+
     /* Enhanced hero banner */
     .hero-banner {
         background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%);
@@ -266,7 +338,7 @@ st.markdown("""
         position: relative;
         overflow: hidden;
     }
-    
+
     .hero-banner::before {
         content: '';
         position: absolute;
@@ -277,7 +349,7 @@ st.markdown("""
         background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.05)" points="0,0 1000,300 1000,1000 0,700"/></svg>');
         pointer-events: none;
     }
-    
+
     .hero-banner h1 {
         color: #fff;
         font-size: 3rem;
@@ -288,7 +360,7 @@ st.markdown("""
         position: relative;
         z-index: 1;
     }
-    
+
     .hero-subtitle {
         color: rgba(255, 255, 255, 0.9);
         font-size: 1.25rem;
@@ -297,132 +369,88 @@ st.markdown("""
         position: relative;
         z-index: 1;
     }
-    
+
     /* Enhanced tab styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
-        background: #FFFFFF;
+        background: var(--card-bg);
         border-radius: 12px;
         padding: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        border: 1px solid #E5E7EB;
+        box-shadow: 0 2px 8px var(--shadow-medium);
+        border: 1px solid var(--border-color);
     }
-    
+
     .stTabs [data-baseweb="tab"] {
         border-radius: 8px;
         padding: 12px 24px;
         font-weight: 500;
         background-color: transparent;
         border: none;
-        color: #6B7280;
+        color: var(--text-secondary);
         transition: all 0.2s ease;
     }
-    
+
     .stTabs [data-baseweb="tab"]:hover {
-        background-color: #F3F4F6;
-        color: #374151;
+        background-color: var(--bg1);
+        color: var(--text-primary);
     }
-    
+
     .stTabs [aria-selected="true"] {
         background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
         color: #FFFFFF;
         box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
     }
-    
-    /* Sidebar enhancements */
-    .css-1d391kg {
-        background: linear-gradient(180deg, #4F46E5 0%, #7C3AED 100%);
-        color: white;
-    }
-    
-    .sidebar .sidebar-content {
-        background: linear-gradient(180deg, #4F46E5 0%, #7C3AED 100%);
-        border-radius: 0 20px 20px 0;
-    }
-    
-    /* Enhanced info boxes */
-    .stInfo {
-        background: linear-gradient(135deg, #DBEAFE 0%, #E0E7FF 100%);
-        border: 1px solid #93C5FD;
-        border-radius: 12px;
-        padding: 1rem;
-        color: #1E40AF;
-    }
-    
-    .stSuccess {
-        background: linear-gradient(135deg, #D1FAE5 0%, #DCFCE7 100%);
-        border: 1px solid #86EFAC;
-        border-radius: 12px;
-        padding: 1rem;
-        color: #059669;
-    }
-    
-    .stWarning {
-        background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-        border: 1px solid #FCD34D;
-        border-radius: 12px;
-        padding: 1rem;
-        color: #D97706;
-    }
-    
-    .stError {
-        background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
-        border: 1px solid #FCA5A5;
-        border-radius: 12px;
-        padding: 1rem;
-        color: #DC2626;
-    }
-    
+
     /* Card-style containers */
     .analysis-card {
-        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+        background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg1) 100%);
         border-radius: 16px;
         padding: 2rem;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        border: 1px solid #E5E7EB;
+        box-shadow: 0 4px 16px var(--shadow-medium);
+        border: 1px solid var(--border-color);
         margin: 1rem 0;
         transition: all 0.2s ease;
     }
-    
+
     .analysis-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 8px 32px var(--shadow-light);
     }
-    
+
     /* Enhanced file uploader */
     .stFileUploader {
         border: 2px dashed #4F46E5;
         border-radius: 12px;
         padding: 2rem;
         text-align: center;
-        background: linear-gradient(135deg, #FAFBFF 0%, #F0F4FF 100%);
+        background: var(--bg1);
         transition: all 0.2s ease;
     }
-    
+
     .stFileUploader:hover {
         border-color: #7C3AED;
-        background: linear-gradient(135deg, #F5F7FF 0%, #EBF0FF 100%);
+        background: var(--bg2);
     }
-    
+
     /* Progress bar styling */
     .stProgress > div > div > div > div {
         background: linear-gradient(90deg, #4F46E5 0%, #7C3AED 100%);
         border-radius: 10px;
     }
-    
+
     /* Footer styling */
     .footer {
         text-align: center;
         padding: 3rem 0 2rem 0;
-        color: #6B7280;
+        color: var(--text-secondary);
         font-size: 1rem;
         font-weight: 500;
-        background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+        background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
         border-radius: 20px 20px 0 0;
         margin-top: 3rem;
-        border-top: 1px solid #E5E7EB;
+        border-top: 1px solid var(--border-color);
     }
-    
+
     /* Mobile responsiveness */
     @media (max-width: 768px) {
         .hero-banner h1 {
@@ -438,48 +466,20 @@ st.markdown("""
             padding: 1rem;
         }
     }
-    
+
     /* Loading animations */
     @keyframes pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.5; }
     }
-    
+
     .loading {
         animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
-    
-    /* Tooltip styling */
-    .tooltip {
-        position: relative;
-        display: inline-block;
-        cursor: help;
-    }
-    
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 200px;
-        background-color: #374151;
-        color: #fff;
-        text-align: center;
-        border-radius: 8px;
-        padding: 8px;
-        position: absolute;
-        z-index: 1;
-        bottom: 125%;
-        left: 50%;
-        margin-left: -100px;
-        font-size: 0.875rem;
-    }
-    
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-    }
-    
+
     /* Hide default Streamlit elements but keep menu */
     .stDeployButton {display: none;}
     footer {visibility: hidden;}
-    /* Keep MainMenu and header visible for menu access */
 </style>
 """, unsafe_allow_html=True)
 
@@ -489,14 +489,14 @@ st.markdown("""
     <h1>🔬 Sentiment Analysis Dashboard</h1>
     <p class="hero-subtitle">Analyze sentiment in text data using state-of-the-art natural language processing</p>
     <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-        <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">
-            🤖 AI-Powered Analysis
+        <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500;">
+            AI-Powered Analysis
         </span>
-        <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">
-            📊 Interactive Visualizations
+        <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500;">
+            Interactive Visualizations
         </span>
-        <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">
-            📁 Batch Processing
+        <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500;">
+            Batch Processing
         </span>
     </div>
 </div>
@@ -506,33 +506,33 @@ st.markdown("""
 col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.markdown("""
-    <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #DBEAFE 0%, #E0E7FF 100%); border-radius: 12px; border: 1px solid #93C5FD;">
-        <h3 style="color: #1E40AF; margin: 0; font-size: 1.5rem;">⚡</h3>
-        <p style="color: #1E40AF; margin: 0; font-weight: 500;">Fast Analysis</p>
+    <div class="metric-container" style="text-align: center;">
+        <h3 style="color: #4F46E5; margin: 0; font-size: 1.2rem; font-weight: 600;">Fast Analysis</h3>
+        <p style="color: var(--text-secondary); margin: 0.5rem 0 0 0; font-size: 0.9rem;">Results in <2 seconds</p>
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown("""
-    <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #D1FAE5 0%, #DCFCE7 100%); border-radius: 12px; border: 1px solid #86EFAC;">
-        <h3 style="color: #059669; margin: 0; font-size: 1.5rem;">🎯</h3>
-        <p style="color: #059669; margin: 0; font-weight: 500;">High Accuracy</p>
+    <div class="metric-container" style="text-align: center;">
+        <h3 style="color: #059669; margin: 0; font-size: 1.2rem; font-weight: 600;">High Accuracy</h3>
+        <p style="color: var(--text-secondary); margin: 0.5rem 0 0 0; font-size: 0.9rem;">92%+ benchmark</p>
     </div>
     """, unsafe_allow_html=True)
 
 with col3:
     st.markdown("""
-    <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-radius: 12px; border: 1px solid #FCD34D;">
-        <h3 style="color: #D97706; margin: 0; font-size: 1.5rem;">🔍</h3>
-        <p style="color: #D97706; margin: 0; font-weight: 500;">Deep Insights</p>
+    <div class="metric-container" style="text-align: center;">
+        <h3 style="color: #D97706; margin: 0; font-size: 1.2rem; font-weight: 600;">Deep Insights</h3>
+        <p style="color: var(--text-secondary); margin: 0.5rem 0 0 0; font-size: 0.9rem;">5-class sentiment</p>
     </div>
     """, unsafe_allow_html=True)
 
 with col4:
     st.markdown("""
-    <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #E0E7FF 0%, #EDE9FE 100%); border-radius: 12px; border: 1px solid #C4B5FD;">
-        <h3 style="color: #7C3AED; margin: 0; font-size: 1.5rem;">📈</h3>
-        <p style="color: #7C3AED; margin: 0; font-weight: 500;">Export Ready</p>
+    <div class="metric-container" style="text-align: center;">
+        <h3 style="color: #7C3AED; margin: 0; font-size: 1.2rem; font-weight: 600;">Export Ready</h3>
+        <p style="color: var(--text-secondary); margin: 0.5rem 0 0 0; font-size: 0.9rem;">PDF, CSV, JSON</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -548,9 +548,39 @@ st.markdown("""
 
 # Sidebar
 with st.sidebar:
+    # Enhanced "How to Use This App" section - prominently placed at top
+    with st.expander("📘 How to Use This App", expanded=True):
+        st.markdown("""
+        ### Quick Start Guide
+        
+        **Single Text Analysis:**
+        1. Go to **"Single Text Analysis"** tab
+        2. Type or paste your text in the text area
+        3. Click **"Analyze Sentiment"** button
+        4. View results and ask follow-up questions
+        
+        **Batch Analysis:**
+        1. Go to **"Batch Analysis"** tab  
+        2. Upload a **CSV** or **TXT** file
+        3. Review the analysis results table
+        4. Download reports in multiple formats
+        
+        **Comparative Analysis:**
+        1. Go to **"Comparative Analysis"** tab
+        2. Enter 2-5 texts you want to compare
+        3. Run analysis to see side-by-side comparison
+        4. Get insights and recommendations
+        
+        ### Best Practices
+        • Use **natural language** for best results
+        • Texts between **10-500 words** work optimally  
+        • Try the **sample packs** for quick testing
+        • Check **confidence scores** for reliability
+        """)
+    
     # Sidebar header with icon
     st.markdown("""
-    <div style="text-align: center; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 1rem;">
+    <div style="text-align: center; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); margin: 1rem 0;">
         <h2 style="color: white; margin: 0; font-size: 1.5rem;">🔬 Dashboard Info</h2>
     </div>
     """, unsafe_allow_html=True)
@@ -558,39 +588,23 @@ with st.sidebar:
     # Technologies used section
     st.markdown("### 🛠️ Technologies")
     st.info("""
-    🤖 **Hugging Face Transformers** - Sentiment Analysis  
-    🔑 **KeyBERT Algorithm** - Keyword Extraction  
-    🎨 **Streamlit Framework** - User Interface  
-    📊 **Plotly Charts** - Interactive Visualizations
+    🤖 **Hugging Face Transformers** - Advanced sentiment analysis using BERT models  
+    🔑 **KeyBERT Algorithm** - Intelligent keyword and phrase extraction  
+    🎨 **Streamlit Framework** - Interactive web application interface  
+    📊 **Plotly Charts** - Dynamic visualizations and charts
     """)
     
-    # Quick stats
-    st.markdown("### 📈 Features")
+    # Quick stats and features
+    st.markdown("### ✨ Key Features")
     st.success("""
-    📝 **5-Class Sentiment**: Very Negative to Very Positive  
-    🎯 **High Accuracy**: 92%+ on benchmark datasets  
-    ⚡ **Fast Processing**: <2 seconds per text  
-    🔄 **Batch Support**: Up to 10,000 texts
+    📝 **5-Class Sentiment Scale**: Very Negative → Very Positive  
+    🎯 **High Accuracy**: 92%+ accuracy on benchmark datasets  
+    ⚡ **Lightning Fast**: Analysis completed in <2 seconds  
+    🔄 **Batch Processing**: Handle up to 10,000 texts at once  
+    🌍 **Multi-language**: Supports English and other major languages  
+    📊 **Rich Visualizations**: Interactive charts and word clouds  
+    💾 **Export Options**: PDF, CSV, and JSON download formats
     """)
-    
-    # Help section
-    with st.expander("💡 How to Use", expanded=False):
-        st.markdown("""
-        **📝 Single Text Analysis:**
-        1. Enter or paste your text
-        2. View instant sentiment results
-        3. Ask follow-up questions
-        
-        **📚 Batch Analysis:**
-        1. Upload CSV/TXT file
-        2. Review processing results  
-        3. Download analysis reports
-        
-        **🔄 Comparative Analysis:**
-        1. Enter multiple texts
-        2. Compare sentiments side-by-side
-        3. Analyze differences
-        """)
     
     # Model Limitations
     with st.expander("⚠️ Model Limitations", expanded=False):
@@ -603,18 +617,40 @@ with st.sidebar:
         for limitation in MODEL_LIMITATIONS['known_limitations']:
             st.write(f"• {limitation}")
     
-    # Support section
+    # Enhanced Support section
     st.markdown("---")
-    st.markdown("### 🆘 Need Help?")
+    st.markdown("### Need Help?")
     
     help_col1, help_col2 = st.columns(2)
     with help_col1:
-        if st.button("📚 Guide", use_container_width=True):
-            st.success("Check the 'How to Use' section above!")
+        if st.button("Quick Help", use_container_width=True):
+            st.success("Check the **'How to Use This App'** section at the top!")
     
     with help_col2:
-        if st.button("🐛 Report", use_container_width=True):
-            st.info("Report bugs at: https://github.com/mooncakeSG/Sentiment-Analysis-/issues/1")
+        if st.button("Report Issue", use_container_width=True):
+            st.info("[Report bugs on GitHub](https://github.com/mooncakeSG/Sentiment-Analysis-/issues/1)")
+    
+    # Additional help options
+    help_col3, help_col4 = st.columns(2) 
+    with help_col3:
+        if st.button("Best Practices", use_container_width=True):
+            st.info("""
+            **Guidelines:**
+            • Keep texts natural and conversational
+            • Check confidence scores (>70% is reliable)
+            • Use sample packs to explore features
+            • Export results for further analysis
+            """)
+    
+    with help_col4:
+        if st.button("Examples", use_container_width=True):
+            st.success("""
+            **Sample Texts:**
+            • "I love this product! It's amazing."
+            • "The service was terrible and slow."
+            • "It's okay, nothing special though."
+            • "Best purchase I've ever made!"
+            """)
     
     # Footer with credits
     st.markdown("---")
@@ -631,7 +667,7 @@ with tab1:
     # Enhanced single text input section
     st.markdown("""
     <div class="analysis-card">
-        <h3 style="color: #4F46E5; margin-top: 0;">📝 Single Text Analysis</h3>
+        <h3 style="color: #4F46E5; margin-top: 0;">Single Text Analysis</h3>
         <p style="color: #6B7280; margin-bottom: 1.5rem;">Enter any text to analyze its sentiment using our AI-powered model</p>
     </div>
     """, unsafe_allow_html=True)
@@ -641,7 +677,7 @@ with tab1:
         "Enter text to analyze:", 
         height=150,
         placeholder="Example: 'I love this new product! It works perfectly and exceeded my expectations.'",
-        help="💡 **Tips for better analysis:**\n\n• Use natural language text\n• Minimum 3 characters, maximum 5000\n• Avoid excessive special characters\n• Multiple sentences provide better context",
+        help="**Tips for better analysis:**\n\n• Use natural language text\n• Minimum 3 characters, maximum 5000\n• Avoid excessive special characters\n• Multiple sentences provide better context",
         label_visibility="visible"
     )
     
@@ -650,11 +686,11 @@ with tab1:
     if text_input:
         char_count = len(text_input)
         if char_count < 3:
-            st.error(f"⚠️ Too short: {char_count}/3 minimum characters")
+            st.error(f"Too short: {char_count}/3 minimum characters")
         elif char_count > 5000:
-            st.error(f"⚠️ Too long: {char_count}/5000 maximum characters")
+            st.error(f"Too long: {char_count}/5000 maximum characters")
         else:
-            st.success(f"✅ Ready for analysis: {char_count} characters")
+            st.success(f"Ready for analysis: {char_count} characters")
             analyze_button_disabled = False
     
     # Analyze button with improved styling
@@ -662,13 +698,33 @@ with tab1:
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         analyze_clicked = st.button(
-            "🔍 Analyze Sentiment", 
+            "Analyze Sentiment", 
             use_container_width=True, 
             disabled=analyze_button_disabled,
             type="primary",
             help="Click to analyze the sentiment of your text" if not analyze_button_disabled else "Enter valid text to enable analysis"
         )
     
+    # Check if we have stored results in session state
+    if 'analysis_results' in st.session_state and 'current_text' in st.session_state:
+        if st.session_state.current_text == text_input:
+            # Use stored results
+            result = st.session_state.analysis_results['result']
+            keywords = st.session_state.analysis_results['keywords']
+            explanation = st.session_state.analysis_results['explanation']
+            
+            # Set flags to show results
+            show_results = True
+        else:
+            # Text changed, clear stored results
+            if 'analysis_results' in st.session_state:
+                del st.session_state.analysis_results
+            if 'current_text' in st.session_state:
+                del st.session_state.current_text
+            show_results = False
+    else:
+        show_results = False
+
     if text_input and analyze_clicked:
         # Validate input first
         validation_error = validate_text_input(text_input)
@@ -700,181 +756,231 @@ with tab1:
                             st.warning(f"⚠️ Could not generate detailed explanation: {str(e)}")
                             explanation = {'reliability': 'Unknown', 'limitations': []}
                         
-                        # Enhanced results display with mobile-friendly layout
-                        st.markdown("---")
-                        st.markdown("### 🎯 Analysis Results")
+                        # Store results in session state
+                        st.session_state.analysis_results = {
+                            'result': result,
+                            'keywords': keywords,
+                            'explanation': explanation
+                        }
+                        st.session_state.current_text = text_input
+                        show_results = True
                         
-                        # Create responsive columns
-                        col1, col2 = st.columns([1, 1], gap="large")
-                        
-                        with col1:
-                            # Sentiment result card
-                            sentiment_color_map = {
-                                "Very Positive": ("#059669", "🎉"),
-                                "Positive": ("#10B981", "😊"), 
-                                "Neutral": ("#6B7280", "😐"),
-                                "Negative": ("#EF4444", "😔"),
-                                "Very Negative": ("#DC2626", "😢")
-                            }
-                            
-                            color, emoji = sentiment_color_map.get(result['sentiment'], ("#6B7280", "🤖"))
-                            
-                            st.markdown(f"""
-                            <div style="background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%); 
-                                        border-radius: 16px; padding: 2rem; text-align: center; 
-                                        border: 2px solid {color}; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
-                                <h2 style="color: {color}; margin: 0; font-size: 3rem;">{emoji}</h2>
-                                <h3 style="color: {color}; margin: 0.5rem 0;">{result['sentiment']}</h3>
-                                <p style="color: #6B7280; margin: 0; font-size: 1.1rem;">
-                                    Confidence: <strong>{result['confidence']:.1%}</strong>
-                                </p>
-                                <div style="background: {color}; height: 4px; border-radius: 2px; 
-                                           width: {result['confidence']*100}%; margin: 1rem auto 0 auto;"></div>
-                            </div>
-                            """, unsafe_allow_html=True)
-                            
-                            # Analysis details
-                            st.markdown("#### 📊 Analysis Details")
-                            st.info(f"""
-                            **🎯 Use Case**: {result.get('use_case', 'General Analysis')}  
-                            **🔬 Model**: BERT Multilingual  
-                            **⚡ Processing Time**: <2 seconds  
-                            **🎨 Reliability**: {explanation.get('reliability', 'High')}
-                            """)
-                        
-                        with col2:
-                            # Keywords section
-                            st.markdown("#### 🔑 Key Insights")
-                            
-                            if keywords:
-                                # Display keywords as styled tags with improved approach
-                                st.markdown("**Key Words & Phrases:**")
-                                
-                                # Create keyword display with better HTML structure
-                                keywords_to_show = keywords[:6]  # Limit to 6 for better display
-                                
-                                # Use columns for better layout
-                                if len(keywords_to_show) > 0:
-                                    cols = st.columns(min(len(keywords_to_show), 3))
-                                    for i, keyword in enumerate(keywords_to_show):
-                                        with cols[i % 3]:
-                                            # Use a simpler, more reliable approach
-                                            st.markdown(f"""
-                                            <div style="
-                                                background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); 
-                                                color: white; 
-                                                padding: 0.5rem 1rem; 
-                                                border-radius: 20px; 
-                                                margin: 0.25rem 0; 
-                                                text-align: center; 
-                                                font-size: 0.85rem;
-                                                font-weight: 500;
-                                                box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
-                                            ">
-                                                {keyword}
-                                            </div>
-                                            """, unsafe_allow_html=True)
-                            else:
-                                st.markdown("""
-                                <div style="background: #FEF3C7; border-radius: 12px; padding: 1.5rem; border: 1px solid #FCD34D;">
-                                    <p style="margin: 0; color: #92400E;">⚠️ No significant keywords detected in this text.</p>
-                                </div>
-                                """, unsafe_allow_html=True)
-                            
-                            # Limitations if any
-                            if explanation.get('limitations'):
-                                st.markdown("#### ⚠️ Analysis Limitations")
-                                limitations_html = ""
-                                for limitation in explanation['limitations']:
-                                    limitations_html += f"• {limitation}<br>"
-                                
-                                st.markdown(f"""
-                                <div style="background: #FEF3C7; border-radius: 12px; padding: 1rem; border: 1px solid #FCD34D;">
-                                    <p style="margin: 0; color: #92400E; font-size: 0.9rem;">{limitations_html}</p>
-                                </div>
-                                """, unsafe_allow_html=True)
-                        
-                        # Follow-up Questions Section - RESTORED FUNCTIONALITY
-                        st.markdown("---")
-                        st.markdown("### 🤔 Ask Follow-up Questions")
-                        st.markdown("Get deeper insights about your analysis results with AI-powered explanations.")
-                        
-                        # Predefined question buttons
-                        follow_col1, follow_col2, follow_col3 = st.columns(3)
-                        
-                        with follow_col1:
-                            if st.button("Why this sentiment?", use_container_width=True, key="why_sentiment"):
-                                with st.spinner("Generating explanation..."):
-                                    explanation = handle_followup_question("Why was this labeled this way?", text_input, result, keywords)
-                                    st.markdown("#### 💡 Explanation")
-                                    st.markdown(explanation)
-                        
-                        with follow_col2:
-                            if st.button("What keywords influenced this?", use_container_width=True, key="keywords_influence"):
-                                with st.spinner("Analyzing keywords..."):
-                                    explanation = handle_followup_question("What keywords caused this result?", text_input, result, keywords)
-                                    st.markdown("#### 🔍 Keyword Analysis")
-                                    st.markdown(explanation)
-                        
-                        with follow_col3:
-                            if st.button("How confident is this?", use_container_width=True, key="confidence_analysis"):
-                                with st.spinner("Analyzing confidence..."):
-                                    explanation = handle_followup_question("How confident is this result?", text_input, result, keywords)
-                                    st.markdown("#### 📊 Confidence Analysis")
-                                    st.markdown(explanation)
-                        
-                        # Custom question input
-                        st.markdown("**Or ask your own question:**")
-                        custom_question = st.text_input(
-                            "Ask anything about this analysis:",
-                            placeholder="e.g., Why is this negative? What made you choose this classification?",
-                            help="Ask questions about the sentiment, keywords, confidence, or anything else about the analysis",
-                            key="custom_followup_question"
-                        )
-                        
-                        if custom_question:
-                            if st.button("Get Answer", type="primary", key="get_custom_answer"):
-                                with st.spinner("Generating answer..."):
-                                    explanation = handle_followup_question(custom_question, text_input, result, keywords)
-                                    st.markdown("#### 🎯 Answer to Your Question")
-                                    st.markdown(f"**Q: {custom_question}**")
-                                    st.markdown(explanation)
-                        
-                        # Quick help section
-                        with st.expander("💡 Example Questions You Can Ask"):
-                            st.markdown("""
-                            **About Sentiment Classification:**
-                            - "Why is this labeled as negative?"
-                            - "What made you classify this as positive?"
-                            - "Why neutral instead of positive?"
-                            
-                            **About Keywords:**
-                            - "What keywords influenced this result?"
-                            - "Which words caused this classification?"
-                            - "How do keywords affect sentiment?"
-                            
-                            **About Confidence:**
-                            - "How confident are you in this result?"
-                            - "Why is the confidence score low?"
-                            - "Is this result reliable?"
-                            
-                            **About Improvement:**
-                            - "How can I improve the accuracy?"
-                            - "What would make this analysis better?"
-                            - "Tips for better sentiment analysis?"
-                            
-                            **About Definitions:**
-                            - "What does 'Very Positive' mean?"
-                            - "Explain the sentiment scale"
-                            - "What is sentiment analysis?"
-                            """)
+                        # Clear any previous follow-up answers when new analysis is performed
+                        st.session_state.custom_answer = None
+                        st.session_state.custom_question_asked = None
+                        st.session_state.predefined_answer = None
+                        st.session_state.predefined_question_type = None
             
             except Exception as e:
                 display_error_with_help(f"Unexpected error occurred: {str(e)}", "general")
                 st.stop()
+    
+    # Display results if we have them (either from fresh analysis or stored in session state)
+    if show_results and 'result' in locals():
+        # Enhanced results display with mobile-friendly layout
+        st.markdown("---")
+        st.markdown("### Analysis Results")
+        
+        # Create responsive columns
+        col1, col2 = st.columns([1, 1], gap="large")
+        
+        with col1:
+            # Sentiment result card
+            sentiment_color_map = {
+                "Very Positive": ("#059669", "🎉"),
+                "Positive": ("#10B981", "😊"), 
+                "Neutral": ("#6B7280", "😐"),
+                "Negative": ("#EF4444", "😔"),
+                "Very Negative": ("#DC2626", "😢")
+            }
+            
+            color, emoji = sentiment_color_map.get(result['sentiment'], ("#6B7280", "🤖"))
+            
+            st.markdown(f"""
+            <div class="analysis-card" style="text-align: center; border: 2px solid {color};">
+                <h2 style="color: {color}; margin: 0; font-size: 3rem;">{emoji}</h2>
+                <h3 style="color: {color}; margin: 0.5rem 0;">{result['sentiment']}</h3>
+                <p style="color: var(--text-secondary); margin: 0; font-size: 1.1rem;">
+                    Confidence: <strong>{result['confidence']:.1%}</strong>
+                </p>
+                <div style="background: {color}; height: 4px; border-radius: 2px; 
+                           width: {result['confidence']*100}%; margin: 1rem auto 0 auto;"></div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Analysis details
+            st.markdown("#### Analysis Details")
+            st.info(f"""
+            **Use Case**: {result.get('use_case', 'General Analysis')}  
+            **Model**: BERT Multilingual  
+            **Processing Time**: <2 seconds  
+            **Reliability**: {explanation.get('reliability', 'High')}
+            """)
+        
+        with col2:
+            # Keywords section
+            st.markdown("#### Key Insights")
+            
+            if keywords:
+                # Display keywords as styled tags with improved approach
+                st.markdown("**Key Words & Phrases:**")
+                
+                # Create keyword display with better HTML structure
+                keywords_to_show = keywords[:6]  # Limit to 6 for better display
+                
+                # Use columns for better layout
+                if len(keywords_to_show) > 0:
+                    cols = st.columns(min(len(keywords_to_show), 3))
+                    for i, keyword in enumerate(keywords_to_show):
+                        with cols[i % 3]:
+                            # Use a simpler, more reliable approach
+                            st.markdown(f"""
+                            <div style="
+                                background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); 
+                                color: white; 
+                                padding: 0.5rem 1rem; 
+                                border-radius: 20px; 
+                                margin: 0.25rem 0; 
+                                text-align: center; 
+                                font-size: 0.85rem;
+                                font-weight: 500;
+                                box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+                            ">
+                                {keyword}
+                            </div>
+                            """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <div style="background: #FEF3C7; border-radius: 12px; padding: 1.5rem; border: 1px solid #FCD34D;">
+                    <p style="margin: 0; color: #92400E;">No significant keywords detected in this text.</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # Limitations if any
+            if explanation.get('limitations'):
+                st.markdown("#### Analysis Limitations")
+                limitations_html = ""
+                for limitation in explanation['limitations']:
+                    limitations_html += f"• {limitation}<br>"
+                
+                st.markdown(f"""
+                <div style="background: #FEF3C7; border-radius: 12px; padding: 1rem; border: 1px solid #FCD34D;">
+                    <p style="margin: 0; color: #92400E; font-size: 0.9rem;">{limitations_html}</p>
+                </div>
+                """, unsafe_allow_html=True)
+        
+        # Follow-up Questions Section - RESTORED FUNCTIONALITY
+        st.markdown("---")
+        st.markdown("### Ask Follow-up Questions")
+        st.markdown("Get deeper insights about your analysis results with AI-powered explanations.")
+        
+        # Predefined question buttons
+        follow_col1, follow_col2, follow_col3 = st.columns(3)
+        
+        # Initialize session state for predefined answers
+        if 'predefined_answer' not in st.session_state:
+            st.session_state.predefined_answer = None
+        if 'predefined_question_type' not in st.session_state:
+            st.session_state.predefined_question_type = None
+        
+        with follow_col1:
+            if st.button("Why this sentiment?", use_container_width=True, key="why_sentiment"):
+                with st.spinner("Generating explanation..."):
+                    explanation_result = handle_followup_question("Why was this labeled this way?", text_input, result, keywords)
+                    st.session_state.predefined_answer = explanation_result
+                    st.session_state.predefined_question_type = "Why this sentiment?"
+        
+        with follow_col2:
+            if st.button("What keywords influenced this?", use_container_width=True, key="keywords_influence"):
+                with st.spinner("Analyzing keywords..."):
+                    explanation_result = handle_followup_question("What keywords caused this result?", text_input, result, keywords)
+                    st.session_state.predefined_answer = explanation_result
+                    st.session_state.predefined_question_type = "What keywords influenced this?"
+        
+        with follow_col3:
+            if st.button("How confident is this?", use_container_width=True, key="confidence_analysis"):
+                with st.spinner("Analyzing confidence..."):
+                    explanation_result = handle_followup_question("How confident is this result?", text_input, result, keywords)
+                    st.session_state.predefined_answer = explanation_result
+                    st.session_state.predefined_question_type = "How confident is this?"
+        
+        # Display predefined answer if available (but not if custom answer is shown)
+        if st.session_state.predefined_answer and st.session_state.predefined_question_type and not (st.session_state.custom_answer and st.session_state.custom_question_asked):
+            st.markdown(f"#### {st.session_state.predefined_question_type}")
+            st.markdown(st.session_state.predefined_answer)
+            
+            # Add button to clear the predefined answer
+            if st.button("Ask Another Question", key="clear_predefined_answer"):
+                st.session_state.predefined_answer = None
+                st.session_state.predefined_question_type = None
+                st.rerun()
+
+        # Custom question input
+        st.markdown("**Or ask your own question:**")
+        custom_question = st.text_input(
+            "Ask anything about this analysis:",
+            placeholder="e.g., Why is this negative? What made you choose this classification?",
+            help="Ask questions about the sentiment, keywords, confidence, or anything else about the analysis",
+            key="custom_followup_question"
+        )
+        
+        # Initialize session state for custom answers if not exists
+        if 'custom_answer' not in st.session_state:
+            st.session_state.custom_answer = None
+        if 'custom_question_asked' not in st.session_state:
+            st.session_state.custom_question_asked = None
+        
+        if custom_question:
+            if st.button("Get Answer", type="primary", key="get_custom_answer"):
+                with st.spinner("Generating answer..."):
+                    explanation_result = handle_followup_question(custom_question, text_input, result, keywords)
+                    # Store the answer in session state
+                    st.session_state.custom_answer = explanation_result
+                    st.session_state.custom_question_asked = custom_question
+        
+        # Display stored custom answer if available
+        if st.session_state.custom_answer and st.session_state.custom_question_asked:
+            st.markdown("#### Answer to Your Question")
+            st.markdown(f"**Q: {st.session_state.custom_question_asked}**")
+            st.markdown(st.session_state.custom_answer)
+            
+            # Add button to clear the answer
+            if st.button("Ask Another Question", key="clear_custom_answer"):
+                st.session_state.custom_answer = None
+                st.session_state.custom_question_asked = None
+                st.rerun()
+
+        # Quick help section
+        with st.expander("Example Questions You Can Ask"):
+            st.markdown("""
+            **About Sentiment Classification:**
+            - "Why is this labeled as negative?"
+            - "What made you classify this as positive?"
+            - "Why neutral instead of positive?"
+            
+            **About Keywords:**
+            - "What keywords influenced this result?"
+            - "Which words caused this classification?"
+            - "How do keywords affect sentiment?"
+            
+            **About Confidence:**
+            - "How confident are you in this result?"
+            - "Why is the confidence score low?"
+            - "Is this result reliable?"
+            
+            **About Improvement:**
+            - "How can I improve the accuracy?"
+            - "What would make this analysis better?"
+            - "Tips for better sentiment analysis?"
+            
+            **About Definitions:**
+            - "What does 'Very Positive' mean?"
+            - "Explain the sentiment scale"
+            - "What is sentiment analysis?"
+            """)
 
 with tab2:
-    st.markdown("### 📚 Batch Analysis")
+    st.markdown("### Batch Analysis")
     st.markdown("Upload a CSV or TXT file containing multiple texts for batch sentiment analysis.")
     
     # File upload with enhanced error handling
@@ -1012,7 +1118,7 @@ with tab2:
                         st.dataframe(display_df, use_container_width=True, hide_index=True)
                         
                         # Summary statistics
-                        st.subheader("📊 Summary Statistics")
+                        st.subheader("Summary Statistics")
                         col1, col2, col3, col4 = st.columns(4)
                         
                         sentiment_counts = results_df['sentiment'].value_counts()
@@ -1092,7 +1198,7 @@ with tab2:
                             """, unsafe_allow_html=True)
                             
                             st.download_button(
-                                label="📊 Download CSV",
+                                label="Download CSV",
                                 data=results_df.to_csv(index=False),
                                 file_name=f"sentiment_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                                 mime="text/csv",
@@ -1115,7 +1221,7 @@ with tab2:
                             """, unsafe_allow_html=True)
                             
                             st.download_button(
-                                label="🔗 Download JSON",
+                                label="Download JSON",
                                 data=results_df.to_json(orient="records", indent=2),
                                 file_name=f"sentiment_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
                                 mime="application/json",
@@ -1157,7 +1263,7 @@ with tab2:
                                 # Enhanced download button with chart type info
                                 chart_type_label = selected_chart_type.title()
                                 st.download_button(
-                                    label=f"📋 Download PDF ({chart_type_label} Chart)",
+                                    label=f"Download PDF ({chart_type_label} Chart)",
                                     data=pdf_buffer.getvalue(),
                                     file_name=f"sentiment_report_{selected_chart_type}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                                     mime="application/pdf",
@@ -1165,8 +1271,8 @@ with tab2:
                                     help=f"Download comprehensive PDF report with {chart_type_label.lower()} chart visualization"
                                 )
                             except Exception as e:
-                                st.error(f"⚠️ PDF generation temporarily unavailable: {str(e)}")
-                                st.info("💡 Try downloading CSV or JSON format instead")
+                                st.error(f"PDF generation temporarily unavailable: {str(e)}")
+                                st.info("Try downloading CSV or JSON format instead")
 
                         # Additional export info
                         st.markdown("""
@@ -1308,11 +1414,11 @@ with tab3:
             help="Choose a pre-built sample pack to test comparative analysis"
         )
         
-        if st.button("🚀 Load Sample Pack", use_container_width=True):
+        if st.button("Load Sample Pack", use_container_width=True):
             st.session_state['load_samples'] = True
             st.session_state['sample_data'] = sample_categories[selected_category]
             st.session_state['sample_num_texts'] = len(sample_categories[selected_category])
-            st.success(f"✅ Loaded {len(sample_categories[selected_category])} sample texts!")
+            st.success(f"Loaded {len(sample_categories[selected_category])} sample texts!")
             st.rerun()
     
     # Check if samples should be loaded
@@ -1361,11 +1467,11 @@ with tab3:
             if current_text and current_text.strip():
                 validation_error = validate_text_input(current_text)
                 if validation_error:
-                    st.error(f"❌ {validation_error}")
+                    st.error(f"{validation_error}")
                 else:
                     texts.append(current_text)
                     text_labels.append(current_label)
-                    st.success(f"✅ Text {i+1} ready for analysis")
+                    st.success(f"Text {i+1} ready for analysis")
     
     # Clear sample data after first use to prevent re-population
     if st.session_state.get('sample_data') and not st.session_state.get('samples_cleared', False):
@@ -1374,9 +1480,9 @@ with tab3:
     # Analysis button with enhanced styling
     if len(texts) >= 2:
         st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("🚀 Run Comparative Analysis", type="primary", use_container_width=True, key="run_comparative_analysis"):
+        if st.button("Run Comparative Analysis", type="primary", use_container_width=True, key="run_comparative_analysis"):
             try:
-                with st.spinner("🔍 Performing comprehensive comparative analysis..."):
+                with st.spinner("Performing comprehensive comparative analysis..."):
                     # Process all texts for comparison
                     comparison_results = []
                     detailed_results = []
@@ -1412,10 +1518,10 @@ with tab3:
                         
                         # Create comprehensive results display
                         st.markdown("---")
-                        st.markdown("## 📊 Comparative Analysis Results")
+                        st.markdown("## Comparative Analysis Results")
                         
                         # Summary metrics with enhanced styling
-                        st.markdown("### 🎯 Quick Insights")
+                        st.markdown("### Quick Insights")
                         
                         # Calculate key statistics
                         avg_confidence = comparison_df['Confidence'].mean()

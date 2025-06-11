@@ -6,6 +6,36 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import streamlit as st
 
+# Dark mode detection function
+def detect_dark_mode():
+    """
+    Detect if user prefers dark mode
+    Currently returns False but can be enhanced with browser detection
+    """
+    # For now, we'll use a simple session state approach
+    # In a real app, you might detect this from browser preferences
+    return st.session_state.get('dark_mode', False)
+
+# Function to get theme-appropriate colors
+def get_theme_colors(dark_mode=False):
+    """Get color scheme based on theme preference"""
+    if dark_mode:
+        return {
+            'bg_color': '#1f2937',
+            'paper_bg': '#1f2937', 
+            'text_color': '#f8fafc',
+            'grid_color': '#374151',
+            'line_color': '#4b5563'
+        }
+    else:
+        return {
+            'bg_color': 'white',
+            'paper_bg': 'white',
+            'text_color': '#111827',
+            'grid_color': '#F3F4F6',
+            'line_color': '#E5E7EB'
+        }
+
 # Define consistent color scheme
 SENTIMENT_COLORS = {
     'Very Positive': '#00a65a',  # Dark Green
@@ -17,11 +47,15 @@ SENTIMENT_COLORS = {
 
 def create_sentiment_distribution(data, plot_type="bar", **kwargs):
     """
-    Create enhanced sentiment distribution visualization with professional styling
+    Create enhanced sentiment distribution visualization with professional styling and dark mode support
     """
     try:
         if data is None or data.empty:
             return None
+        
+        # Detect dark mode preference
+        dark_mode = detect_dark_mode()
+        theme_colors = get_theme_colors(dark_mode)
         
         # Professional color palette
         colors = {
@@ -48,11 +82,12 @@ def create_sentiment_distribution(data, plot_type="bar", **kwargs):
                 labels={'x': 'Sentiment Category', 'y': 'Number of Texts'}
             )
             
-            # Enhanced styling
+            # Enhanced styling with dark mode support
             fig.update_layout(
-                plot_bgcolor="white",
-                paper_bgcolor="white",
-                font_color="#111827",
+                template="plotly_dark" if dark_mode else "plotly",
+                plot_bgcolor=theme_colors['bg_color'],
+                paper_bgcolor=theme_colors['paper_bg'],
+                font_color=theme_colors['text_color'],
                 title_font_size=20,
                 title_x=0.5,
                 title_font_family="Inter, sans-serif",
@@ -60,16 +95,18 @@ def create_sentiment_distribution(data, plot_type="bar", **kwargs):
                 showlegend=False,
                 xaxis=dict(
                     showgrid=False,
-                    linecolor="#E5E7EB",
+                    linecolor=theme_colors['line_color'],
                     title_font_size=14,
-                    title_font_family="Inter, sans-serif"
+                    title_font_family="Inter, sans-serif",
+                    color=theme_colors['text_color']
                 ),
                 yaxis=dict(
                     showgrid=True,
-                    gridcolor="#F3F4F6",
-                    linecolor="#E5E7EB",
+                    gridcolor=theme_colors['grid_color'],
+                    linecolor=theme_colors['line_color'],
                     title_font_size=14,
-                    title_font_family="Inter, sans-serif"
+                    title_font_family="Inter, sans-serif",
+                    color=theme_colors['text_color']
                 )
             )
             
@@ -91,9 +128,10 @@ def create_sentiment_distribution(data, plot_type="bar", **kwargs):
             )
             
             fig.update_layout(
-                plot_bgcolor="white",
-                paper_bgcolor="white",
-                font_color="#111827",
+                template="plotly_dark" if dark_mode else "plotly",
+                plot_bgcolor=theme_colors['bg_color'],
+                paper_bgcolor=theme_colors['paper_bg'],
+                font_color=theme_colors['text_color'],
                 title_font_size=20,
                 title_x=0.5,
                 title_font_family="Inter, sans-serif",
@@ -119,14 +157,15 @@ def create_sentiment_distribution(data, plot_type="bar", **kwargs):
             )
             
             fig.update_layout(
-                plot_bgcolor="white",
-                paper_bgcolor="white",
-                font_color="#111827",
+                template="plotly_dark" if dark_mode else "plotly",
+                plot_bgcolor=theme_colors['bg_color'],
+                paper_bgcolor=theme_colors['paper_bg'],
+                font_color=theme_colors['text_color'],
                 title_font_size=20,
                 title_x=0.5,
                 title_font_family="Inter, sans-serif",
                 margin=dict(t=80, b=60, l=60, r=60),
-                annotations=[dict(text='Sentiment<br>Analysis', x=0.5, y=0.5, font_size=16, showarrow=False)]
+                annotations=[dict(text='Sentiment<br>Analysis', x=0.5, y=0.5, font_size=16, showarrow=False, font_color=theme_colors['text_color'])]
             )
             
         elif plot_type == "line":
@@ -139,21 +178,24 @@ def create_sentiment_distribution(data, plot_type="bar", **kwargs):
             )
             
             fig.update_layout(
-                plot_bgcolor="white",
-                paper_bgcolor="white",
-                font_color="#111827",
+                template="plotly_dark" if dark_mode else "plotly",
+                plot_bgcolor=theme_colors['bg_color'],
+                paper_bgcolor=theme_colors['paper_bg'],
+                font_color=theme_colors['text_color'],
                 title_font_size=20,
                 title_x=0.5,
                 title_font_family="Inter, sans-serif",
                 margin=dict(t=80, b=60, l=60, r=60),
                 xaxis=dict(
                     showgrid=False,
-                    linecolor="#E5E7EB"
+                    linecolor=theme_colors['line_color'],
+                    color=theme_colors['text_color']
                 ),
                 yaxis=dict(
                     showgrid=True,
-                    gridcolor="#F3F4F6",
-                    linecolor="#E5E7EB"
+                    gridcolor=theme_colors['grid_color'],
+                    linecolor=theme_colors['line_color'],
+                    color=theme_colors['text_color']
                 )
             )
             
@@ -172,11 +214,15 @@ def create_sentiment_distribution(data, plot_type="bar", **kwargs):
 
 def create_confidence_chart(data, **kwargs):
     """
-    Create confidence distribution chart
+    Create confidence distribution chart with dark mode support
     """
     try:
         if data is None or data.empty or 'confidence' not in data.columns:
             return None
+        
+        # Detect dark mode preference
+        dark_mode = detect_dark_mode()
+        theme_colors = get_theme_colors(dark_mode)
         
         # Create confidence distribution
         fig = px.histogram(
@@ -188,16 +234,17 @@ def create_confidence_chart(data, **kwargs):
         )
         
         fig.update_layout(
-            plot_bgcolor="white",
-            paper_bgcolor="white",
-            font_color="#111827",
+            template="plotly_dark" if dark_mode else "plotly",
+            plot_bgcolor=theme_colors['bg_color'],
+            paper_bgcolor=theme_colors['paper_bg'],
+            font_color=theme_colors['text_color'],
             title_font_size=20,
             title_x=0.5,
             title_font_family="Inter, sans-serif",
             margin=dict(t=80, b=60, l=60, r=60),
             xaxis=dict(
                 showgrid=False,
-                linecolor="#E5E7EB",
+                linecolor=theme_colors['line_color'],
                 title_font_size=14,
                 title_font_family="Inter, sans-serif"
             ),

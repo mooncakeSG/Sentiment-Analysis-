@@ -1,7 +1,7 @@
 # Core dependencies
 streamlit>=1.32.0
-pandas>=2.0.0
-numpy>=1.26.0
+pandas>=2.0.0    
+numpy>=1.26.0    
 
 # Streamlit Extensions (REQUIRED for app functionality)
 streamlit-extras>=0.3.0

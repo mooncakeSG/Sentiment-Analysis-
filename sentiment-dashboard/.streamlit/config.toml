@@ -1,8 +1,9 @@
 [theme]
-primaryColor = "#4F46E5"              # Indigo-600 for primary elements
-backgroundColor = "#F9FAFB"           # Gray-50 for main background
-secondaryBackgroundColor = "#E5E7EB"  # Gray-200 for sidebar and secondary areas
-textColor = "#111827"                 # Gray-900 for text
+base="auto"
+primaryColor="#6366f1"
+backgroundColor="#F9FAFB"
+secondaryBackgroundColor="#E5E7EB"
+textColor="#111827"
 font = "sans serif"                   # Clean sans-serif font
 
 [server]
