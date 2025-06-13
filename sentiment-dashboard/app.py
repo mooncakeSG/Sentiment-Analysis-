@@ -980,8 +980,22 @@ with tab1:
             """)
 
 with tab2:
-    st.markdown("### Batch Analysis")
+    st.markdown("### 📚 Batch Analysis")
     st.markdown("Upload a CSV or TXT file containing multiple texts for batch sentiment analysis.")
+    
+    # Add optimization override option
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.markdown("**Processing Mode:**")
+    with col2:
+        force_optimization = st.toggle("Force Optimization", 
+                                       value=True, 
+                                       help="Enable optimized processing for deployment environments")
+    
+    if force_optimization:
+        st.info("🚀 Optimized processing enabled - works for any amount of text")
+    else:
+        st.warning("⚠️ Standard processing - may hang on large datasets in deployment")
     
     # File upload with enhanced error handling
     uploaded_file = st.file_uploader(
@@ -1025,55 +1039,38 @@ with tab2:
                 if not valid_texts:
                     display_error_with_help("No valid texts found for analysis.", "validation")
                 else:
-                    # Process the valid texts with deployment-aware processing
+                    # Choose processing method based on user preference
                     with st.spinner(f"🚀 Analyzing {len(valid_texts)} texts..."):
                         try:
-                            # Check if we're in a deployment environment
-                            import os
-                            import socket
-                            
-                            # Enhanced deployment detection
-                            is_deployed = (
-                                os.getenv('STREAMLIT_SHARING_MODE') == '1' or
-                                'streamlit' in os.getenv('HOME', '').lower() or
-                                os.getenv('DYNO') is not None or
-                                os.getenv('RAILWAY_ENVIRONMENT') is not None or
-                                'streamlit.app' in socket.getfqdn() or
-                                'render.com' in socket.getfqdn() or
-                                os.getenv('RENDER') is not None or
-                                os.getenv('STREAMLIT_CLOUD') is not None or
-                                'streamlit-cloud' in socket.getfqdn() or
-                                # Force deployment mode for large batches to be safe
-                                len(valid_texts) > 30
-                            )
-                            
-                            if is_deployed:
-                                st.info("🚀 Deployment environment detected - using optimized processing")
-                                from deployment_fix import process_batch_deployment_safe
-                                results_df = process_batch_deployment_safe(valid_texts)
+                            if force_optimization:
+                                # Use universal optimizer (recommended for deployment)
+                                from universal_optimizer import universal_processor
+                                results_df = universal_processor.process_universal_batch(valid_texts)
                             else:
-                                st.info("💻 Local environment detected - using full processing")
+                                # Use standard processing (may hang in deployment)
+                                st.warning("⚠️ Using standard processing - this may hang in deployment environments")
                                 results_df = BatchProcessor.process_batch(valid_texts)
                             
                         except Exception as batch_error:
-                            display_error_with_help(
-                                f"Batch processing failed: {str(batch_error)}", 
-                                "processing",
-                                [
-                                    "Try processing with a smaller dataset",
-                                    "Check your internet connection", 
-                                    "Refresh the page and try again",
-                                    "For deployment issues, the app will use simplified processing"
-                                ]
-                            )
+                            st.error(f"❌ Processing failed: {str(batch_error)}")
                             
-                            # Fallback to deployment-safe processing
-                            try:
-                                st.info("🔄 Trying deployment-safe processing as fallback...")
-                                from deployment_fix import process_batch_deployment_safe
-                                results_df = process_batch_deployment_safe(valid_texts)
-                            except Exception as fallback_error:
-                                # Emergency fallback
+                            # Fallback to universal optimizer if standard processing fails
+                            if not force_optimization:
+                                try:
+                                    st.info("🔄 Switching to optimized processing as fallback...")
+                                    from universal_optimizer import universal_processor
+                                    results_df = universal_processor.process_universal_batch(valid_texts)
+                                except Exception as universal_error:
+                                    # Final fallback to emergency processing
+                                    try:
+                                        st.warning("🚨 Using emergency processing mode...")
+                                        from emergency_deployment_fix import emergency_batch_processor
+                                        results_df = emergency_batch_processor(valid_texts)
+                                    except Exception as emergency_error:
+                                        st.error(f"❌ All processing methods failed: {str(emergency_error)}")
+                                        st.stop()
+                            else:
+                                # If universal optimizer failed, try emergency fallback
                                 try:
                                     st.warning("🚨 Using emergency processing mode...")
                                     from emergency_deployment_fix import emergency_batch_processor
