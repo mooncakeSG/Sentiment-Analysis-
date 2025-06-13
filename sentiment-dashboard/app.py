@@ -1025,34 +1025,46 @@ with tab2:
                 if not valid_texts:
                     display_error_with_help("No valid texts found for analysis.", "validation")
                 else:
-                    # Process the valid texts with progress tracking
+                    # Process the valid texts with deployment-aware processing
                     with st.spinner(f"🚀 Analyzing {len(valid_texts)} texts..."):
-                        progress_bar = st.progress(0)
-                        status_text = st.empty()
-                        
                         try:
-                            results_df = BatchProcessor.process_batch(valid_texts)
-                            progress_bar.progress(1.0)
-                            status_text.text("Analysis complete!")
+                            # Check if we're in a deployment environment
+                            import os
+                            is_deployed = (
+                                os.getenv('STREAMLIT_SHARING_MODE') == '1' or
+                                'streamlit' in os.getenv('HOME', '').lower() or
+                                os.getenv('DYNO') is not None or
+                                os.getenv('RAILWAY_ENVIRONMENT') is not None
+                            )
                             
-                            # Clean up progress indicators
-                            progress_bar.empty()
-                            status_text.empty()
+                            if is_deployed:
+                                st.info("🚀 Deployment environment detected - using optimized processing")
+                                from deployment_fix import process_batch_deployment_safe
+                                results_df = process_batch_deployment_safe(valid_texts)
+                            else:
+                                st.info("💻 Local environment detected - using full processing")
+                                results_df = BatchProcessor.process_batch(valid_texts)
                             
                         except Exception as batch_error:
-                            progress_bar.empty()
-                            status_text.empty()
                             display_error_with_help(
                                 f"Batch processing failed: {str(batch_error)}", 
                                 "processing",
                                 [
                                     "Try processing with a smaller dataset",
-                                    "Check your internet connection",
+                                    "Check your internet connection", 
                                     "Refresh the page and try again",
-                                    "Contact support if the issue persists"
+                                    "For deployment issues, the app will use simplified processing"
                                 ]
                             )
-                            st.stop()
+                            
+                            # Fallback to deployment-safe processing
+                            try:
+                                st.info("🔄 Trying deployment-safe processing as fallback...")
+                                from deployment_fix import process_batch_deployment_safe
+                                results_df = process_batch_deployment_safe(valid_texts)
+                            except Exception as fallback_error:
+                                st.error(f"❌ All processing methods failed: {str(fallback_error)}")
+                                st.stop()
                     
                     # Optimize memory usage
                     try:

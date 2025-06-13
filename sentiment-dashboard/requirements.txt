@@ -29,4 +29,7 @@ requests>=2.31.0
 
 # PDF Generation
 pdfkit>=1.0.0
-reportlab>=4.1.0 
+reportlab>=4.1.0
+
+# System monitoring (for deployment optimization)
+psutil>=5.9.0 
