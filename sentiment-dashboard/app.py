@@ -1030,11 +1030,21 @@ with tab2:
                         try:
                             # Check if we're in a deployment environment
                             import os
+                            import socket
+                            
+                            # Enhanced deployment detection
                             is_deployed = (
                                 os.getenv('STREAMLIT_SHARING_MODE') == '1' or
                                 'streamlit' in os.getenv('HOME', '').lower() or
                                 os.getenv('DYNO') is not None or
-                                os.getenv('RAILWAY_ENVIRONMENT') is not None
+                                os.getenv('RAILWAY_ENVIRONMENT') is not None or
+                                'streamlit.app' in socket.getfqdn() or
+                                'render.com' in socket.getfqdn() or
+                                os.getenv('RENDER') is not None or
+                                os.getenv('STREAMLIT_CLOUD') is not None or
+                                'streamlit-cloud' in socket.getfqdn() or
+                                # Force deployment mode for large batches to be safe
+                                len(valid_texts) > 30
                             )
                             
                             if is_deployed:
@@ -1057,14 +1067,20 @@ with tab2:
                                 ]
                             )
                             
-                            # Fallback to deployment-safe processing
-                            try:
-                                st.info("🔄 Trying deployment-safe processing as fallback...")
-                                from deployment_fix import process_batch_deployment_safe
-                                results_df = process_batch_deployment_safe(valid_texts)
-                            except Exception as fallback_error:
-                                st.error(f"❌ All processing methods failed: {str(fallback_error)}")
-                                st.stop()
+                                                         # Fallback to deployment-safe processing
+                             try:
+                                 st.info("🔄 Trying deployment-safe processing as fallback...")
+                                 from deployment_fix import process_batch_deployment_safe
+                                 results_df = process_batch_deployment_safe(valid_texts)
+                             except Exception as fallback_error:
+                                 # Emergency fallback
+                                 try:
+                                     st.warning("🚨 Using emergency processing mode...")
+                                     from emergency_deployment_fix import emergency_batch_processor
+                                     results_df = emergency_batch_processor(valid_texts)
+                                 except Exception as emergency_error:
+                                     st.error(f"❌ All processing methods failed: {str(emergency_error)}")
+                                     st.stop()
                     
                     # Optimize memory usage
                     try:

@@ -12,11 +12,18 @@ from typing import List
 
 def check_deployment_environment():
     """Detect if running in deployment environment"""
+    import socket
+    
     deployment_indicators = [
         os.getenv('STREAMLIT_SHARING_MODE') == '1',
         'streamlit' in os.getenv('HOME', '').lower(),
         os.getenv('DYNO') is not None,  # Heroku
         os.getenv('RAILWAY_ENVIRONMENT') is not None,  # Railway
+        'streamlit.app' in socket.getfqdn(),  # Streamlit Cloud
+        'render.com' in socket.getfqdn(),  # Render
+        os.getenv('RENDER') is not None,  # Render
+        os.getenv('STREAMLIT_CLOUD') is not None,  # Streamlit Cloud
+        'streamlit-cloud' in socket.getfqdn(),  # Streamlit Cloud variants
     ]
     return any(deployment_indicators)
 
