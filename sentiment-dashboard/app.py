@@ -1067,20 +1067,20 @@ with tab2:
                                 ]
                             )
                             
-                                                         # Fallback to deployment-safe processing
-                             try:
-                                 st.info("🔄 Trying deployment-safe processing as fallback...")
-                                 from deployment_fix import process_batch_deployment_safe
-                                 results_df = process_batch_deployment_safe(valid_texts)
-                             except Exception as fallback_error:
-                                 # Emergency fallback
-                                 try:
-                                     st.warning("🚨 Using emergency processing mode...")
-                                     from emergency_deployment_fix import emergency_batch_processor
-                                     results_df = emergency_batch_processor(valid_texts)
-                                 except Exception as emergency_error:
-                                     st.error(f"❌ All processing methods failed: {str(emergency_error)}")
-                                     st.stop()
+                            # Fallback to deployment-safe processing
+                            try:
+                                st.info("🔄 Trying deployment-safe processing as fallback...")
+                                from deployment_fix import process_batch_deployment_safe
+                                results_df = process_batch_deployment_safe(valid_texts)
+                            except Exception as fallback_error:
+                                # Emergency fallback
+                                try:
+                                    st.warning("🚨 Using emergency processing mode...")
+                                    from emergency_deployment_fix import emergency_batch_processor
+                                    results_df = emergency_batch_processor(valid_texts)
+                                except Exception as emergency_error:
+                                    st.error(f"❌ All processing methods failed: {str(emergency_error)}")
+                                    st.stop()
                     
                     # Optimize memory usage
                     try:
